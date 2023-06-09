@@ -24,7 +24,7 @@
                     <button class="btn btn-primary mr-md-2" type="button">+</button>
                 </div>
                 <p>Description</p>
-                <textarea class="form-control" id="exampleFormControlTextarea1" 
+                <textarea  name="editor" class="form-control" id="exampleFormControlTextarea1 editor" 
                 rows="4" v-model="product.description"></textarea>
                 <p>Product Orders</p>
                 <textarea class="form-control" id="exampleFormControlTextarea1" 
