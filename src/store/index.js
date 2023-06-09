@@ -5,6 +5,10 @@ import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
+//import { getStorage } from "firebase/storage";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
 import {  
   getDocs, 
   collection, 
@@ -90,10 +94,10 @@ export default createStore({
             products.push(list.data());
         });
         products.sort(function (a, b) {
-          if (Number(a.title) > Number(b.title)) {
+          if ((a.title) > (b.title)) {
             return 1;
           }
-          if (Number(a.title) < Number(b.title)) {
+          if ((a.title) < (b.title)) {
             return -1;
           }
         });

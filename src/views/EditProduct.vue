@@ -14,7 +14,10 @@
                 rows="1" v-model="product.short"></textarea>
                 <div class="mb-3">
                     <label for="formFileMultiple" class="form-label">Add Foto</label>
-                    <input class="form-control" type="file" id="formFileMultiple" multiple>
+                    <input class="form-control" type="file" 
+                    id="formFileMultiple" multiple
+                    accept="image/*" @change="onChange">
+                    <img class="pre-view" :src="imageSrc" v-if="imageSrc"/>
                 </div>
                 <select class="form-select" aria-label="Пример выбора по умолчанию">
                     <option v-for="(item, index) in getCategories" :key="index">{{ item.title }}</option>
@@ -42,10 +45,21 @@ export default {
     },
     data: function() {
         return {
-        id: this.$route.params.id
+        id: this.$route.params.id,
+        imageSrc: '',
+        image: null
         }
     },
     methods: {
+        onChange (event) {
+            let file = event.target.files[0]
+            let reader = new FileReader()
+            reader.onload = () => {
+                this.imageSrc = reader.result
+            }
+            reader.readAsDataURL(file)
+            this.image = file
+        }
         
     },
     computed: {
