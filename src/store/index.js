@@ -5,7 +5,7 @@ import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-//import { getStorage } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -37,6 +37,7 @@ const app = initializeApp({
 // Initialize Firebase
 const DB = getFirestore(app);
 //const AUTH = getAuth(app);
+const Storage = getStorage();
 
 function getDocFromDB (deskID, colID) {
   return getDoc(doc(DB, deskID, colID));
@@ -86,6 +87,17 @@ export default createStore({
     },
   },
   actions: {
+    upload(context, file) {
+      let storageRef = ref(Storage, 'products-images/' + file.name);
+      uploadBytes(storageRef, file)
+          .then(() => {
+              console.log('done');
+          });
+          getDownloadURL(ref(Storage, 'products-images/' + file.name))
+          .then((url) => {
+            console.log(url);
+          });
+  },
     fetchProducts(context) {
       let products = [];
       getDataFromDB('Products')
