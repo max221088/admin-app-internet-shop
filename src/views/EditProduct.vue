@@ -75,7 +75,7 @@
                         <div class="col-3">
                             <p>Prices</p>
                         </div>
-                        <div class="col-4" v-if="!!EditProduct.title">
+                        <div class="col-3" v-if="!!EditProduct.title">
                             <textarea v-for="(item, index) in EditProduct.prices" :key="index"
                              class="form-control" 
                             style="resize:none;"
@@ -91,7 +91,16 @@
                         </div>
                         <div class="col-1">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button class="btn btn-primary mr-md-2" type="button">+</button>
+                                <button class="btn btn-primary mr-md-2" data-bs-toggle="modal"
+                                data-bs-target="#exampleModalAddPrice" type="button">+</button>
+                                <ModalAddPrice @AddPrice="AddNewPrice"></ModalAddPrice>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button class="btn btn-primary mr-md-2 btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#exampleModalDelPrice" type="button">X</button>
+                                <ModalDelPrice :prices="EditProduct.prices" @DelPrice="DelPrice"></ModalDelPrice>
                             </div>
                         </div>
                     </div>
@@ -156,6 +165,8 @@
 //import Editor from '../components/JoditEditor.vue'
 import ModalAddCategory from '../components/ModalAddCategory.vue'
 import ModalDelCategory from '../components/ModalDelCategory.vue'
+import ModalAddPrice from '../components/ModalAddPrice.vue'
+import ModalDelPrice from '../components/ModalDelPrice.vue'
 
 
 export default {
@@ -163,7 +174,9 @@ export default {
     components: {
         //Editor
         ModalAddCategory,
-        ModalDelCategory
+        ModalDelCategory,
+        ModalAddPrice,
+        ModalDelPrice
     },
     data: function() {
         return {
@@ -172,10 +185,23 @@ export default {
         image: null,
         cat: '01',
         EditProduct: {},
-        CancelProduct: {}
+        CancelProduct: {},
+        price: null
         }
     },
     methods: {
+        DelPrice (delUnit) {
+           delete this.EditProduct.prices[delUnit.toLowerCase()];
+        },
+        AddNewPrice(newUnit, newValue) {
+            if ((typeof this.EditProduct.prices[newUnit.toLowerCase()]) === "undefined") {
+                this.EditProduct.prices[newUnit.toLowerCase()] = {
+                unit: newUnit.toUpperCase(),
+                value: newValue
+                };
+            }
+            
+        }, 
         DelCategory (data) {
             if ((this.EditProduct.category.indexOf(data)) != -1) {
                 let index = this.EditProduct.category.indexOf(data);
