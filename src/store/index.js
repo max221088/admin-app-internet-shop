@@ -56,6 +56,17 @@ export default createStore({
     categoriesDB: [],
   },
   getters: {
+    getCategoryNameForProduct (state, catProductId) {
+      let cat = []
+      catProductId.forEach(el => {
+        for (let i = 0; i< state.categoriesDB.length; i++) {
+          if (toString(el) === toString(state.categoriesDB[i].id)) {
+            cat.push(state.categoriesDB[i].title)
+          }
+        }
+      })
+      return cat;
+    },
     getProductsForSearch (state) {
       return state.productsForSearch;
     },
@@ -125,14 +136,15 @@ export default createStore({
           data.forEach(list => {
             context.state.categoriesDB.push(list.data());
         });
+        //console.log(context.state.categoriesDB);
       })
     },
     fetchProductFromID (context, ID) {
       return getDocFromDB ('Products', ID)
       .then(data => {
-        console.log(data.data());
         context.state.product = [];
         context.state.product = data.data();
+        console.log(context.state.product);
         })
       },
   },

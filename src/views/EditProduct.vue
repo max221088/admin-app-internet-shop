@@ -1,6 +1,6 @@
 <template>
     <div class="wrop container">
-        <h4><span class="text-muted">Edit Product</span> {{ product.title }}</h4>
+        <h4><span class="text-muted">Edit Product </span> {{ EditProduct.title }}</h4>
         <div class=" container">
             <div class="row">
                 <div class="col-8">
@@ -10,7 +10,7 @@
                         </div>
                         <div class="col-9">
                             <textarea class="form-control" id="exampleFormControlTextarea1" 
-                            v-model="product.title"></textarea>
+                            v-model="EditProduct.title"></textarea>
                         </div>
                     </div>
                     <div class="row">
@@ -20,7 +20,7 @@
                         <div class="col-9">
                             <textarea class="form-control" id="exampleFormControlTextarea1" 
                             style="resize:none;"
-                            rows="1" v-model="product.order"></textarea>
+                            rows="1" v-model="EditProduct.order"></textarea>
                         </div>
                     </div>
                     <div class="row">
@@ -31,7 +31,7 @@
                             <textarea readonly class="form-control" 
                             style="resize:none;"
                             id="exampleFormControlTextarea1" 
-                            rows="1" v-model="product.id"></textarea>
+                            rows="1" v-model="EditProduct.id"></textarea>
                         </div>
                     </div>
                     <div class="row">
@@ -40,37 +40,50 @@
                         </div>
                         <div class="col-9">
                             <textarea class="form-control" id="exampleFormControlTextarea1" 
-                            v-model="product.short"></textarea>
+                            v-model="EditProduct.short"></textarea>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-3">
                             <p>Categories</p>
                         </div>
-                        <div class="col-8">
-                            <select class="form-select">
-                                <option v-for="(item, index) in getCategories" :key="index">{{ item.title }}</option>  
-                            </select>
+                        <div class="col-7" v-if="EditProduct.title">
+                            <div class="cat-container">
+                                <span v-for="cat, index in CatProduct" :key="index" 
+                                :data-id="cat.id">{{ cat.title }}, </span>
+                            </div>   
                         </div>
+                        
                         <div class="col-1">
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button class="btn btn-primary mr-md-2" type="button">+</button>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-auto">
+                                <button  class="btn btn-primary mr-md-2" type="button" 
+                                data-bs-toggle="modal" data-bs-target="#exampleModalAdd">+</button>
                             </div>
                         </div>
+                        <div class="col-1">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-auto">
+                                <button  class="btn btn-primary mr-md-2 btn-danger" type="button" 
+                                data-bs-toggle="modal" data-bs-target="#exampleModalDel">X</button>
+                            </div>
+                            <ModalAddCategory :categories="getCategories" @AddCat="changeCategory"></ModalAddCategory>
+                            <ModalDelCategory v-if="EditProduct.title" 
+                            :categories="CatProduct" @DelCat="DelCategory"></ModalDelCategory>
+                        </div>
                     </div>
+                    
                     <div class="row">
                         <div class="col-3">
                             <p>Prices</p>
                         </div>
-                        <div class="col-4" v-if="!!product.title">
-                            <textarea v-for="(item, index) in product.prices" :key="index"
+                        <div class="col-4" v-if="!!EditProduct.title">
+                            <textarea v-for="(item, index) in EditProduct.prices" :key="index"
                              class="form-control" 
                             style="resize:none;"
                             id="exampleFormControlTextarea1" 
                             rows="1" v-model="item.value"></textarea>  
                         </div>
-                        <div class="col-4" v-if="!!product.title">
-                            <textarea v-for="(item, index) in product.prices" :key="index"
+                        <div class="col-4" v-if="!!EditProduct.title">
+                            <textarea v-for="(item, index) in EditProduct.prices" :key="index"
                             readonly class="form-control" 
                             style="resize:none;"
                             id="exampleFormControlTextarea1" 
@@ -86,7 +99,7 @@
                 <div class="col-4">
                     <div class="row">
                         <div class="col-6">      
-                            <img :src="product.avatar" class="img-thumbnail img-fluid avatar-view" alt="">
+                            <img :src="EditProduct.avatar" class="img-thumbnail img-fluid avatar-view" alt="">
                         </div>
                         <div class="col-6">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
@@ -107,7 +120,7 @@
                                 @change="onChange">
                             <div class="row">
                                 <div class="col-12">
-                                    <img class="pre-view" v-for="foto, index in product.gallery" :key="index" :src="foto"/>
+                                    <img class="pre-view" v-for="foto, index in EditProduct.gallery" :key="index" :src="foto"/>
                                     <img class="pre-view" :src="imageSrc" v-if="imageSrc"/>
                                 </div>
                             </div>
@@ -121,7 +134,16 @@
                 </div>
                 <div class="col-10">
                     <textarea  name="editor" class="form-control" id="exampleFormControlTextarea1 editor" 
-                    rows="8" v-model="product.description"></textarea>
+                    rows="8" v-model="EditProduct.description"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div clas="col-10">
+                    <button type="button" 
+                    @click="SaveProduct"
+                    class="btn btn-primary btn-lg save">Dalete</button>
+                    <router-link to="/" teg="button" type="button" 
+                    class="btn btn-secondary btn-lg">Cancel</router-link>
                 </div>
             </div>
         </div> 
@@ -132,21 +154,46 @@
 
 //import TextEditor from './EditProduct.vue'
 //import Editor from '../components/JoditEditor.vue'
+import ModalAddCategory from '../components/ModalAddCategory.vue'
+import ModalDelCategory from '../components/ModalDelCategory.vue'
 
 
 export default {
     name: 'EditProduct',
     components: {
         //Editor
+        ModalAddCategory,
+        ModalDelCategory
     },
     data: function() {
         return {
         id: this.$route.params.id,
         imageSrc: '',
-        image: null
+        image: null,
+        cat: '01',
+        EditProduct: {},
+        CancelProduct: {}
         }
     },
     methods: {
+        DelCategory (data) {
+            if ((this.EditProduct.category.indexOf(data)) != -1) {
+                let index = this.EditProduct.category.indexOf(data);
+                this.EditProduct.category.splice(index, 1);
+            } 
+        },
+        SaveProduct () {
+            console.log(this.EditProduct);
+            
+        },
+        changeCategory (data) {
+            this.cat = data;
+            if ((this.EditProduct.category.indexOf(this.cat)) != -1) {
+                console.log('alarm')
+            } else {
+                this.EditProduct.category.push(this.cat);
+            }
+        },
         StartUpload () {
             this.$refs.fileInput.click();
         },
@@ -166,17 +213,30 @@ export default {
         
     },
     computed: {
-        product () {
-        return this.$store.getters['getProduct'];
-    },
-    getCategories () {
-          return this.$store.getters['getCategoriesFromDB'];
+        getCategories () {
+            return this.$store.getters['getCategoriesFromDB'];
         },
+        CatProduct () {
+            let cat = []
+            this.EditProduct.category.forEach(el => {
+                for (let i = 0; i< this.getCategories.length; i++) {
+                    if (el === this.getCategories[i].id) {
+                        cat.push(this.getCategories[i])
+                    }
+                }
+            })
+            return cat
+        }
     },
     created: function () {
     this.$store.dispatch('fetchProductFromID', this.id);
     this.$store.dispatch('fetchCategories');
+  },
+  beforeUpdate () {
+    this.EditProduct = this.$store.getters['getProduct'];
+    this.CancelProduct = this.$store.getters['getProduct'];
   }
+  
 }
 
 </script>
