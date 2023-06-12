@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
-    <HelloWorld :products="productsRender"/>
+    <HelloWorld/>
   </div>
 </template>
 
@@ -15,13 +15,10 @@ export default {
     HelloWorld
   },
   computed: {
-    productsRender () {
-        return this.$store.getters['getProductsFromDB'];
-    },
+    
   },
   created: function () {
     this.$store.dispatch('fetchProducts');
-    this.$store.dispatch('fetchCategories');
   }
 }
 </script>

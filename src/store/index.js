@@ -54,8 +54,16 @@ export default createStore({
     product: [],
     productsForSearch: [],
     categoriesDB: [],
+    url: [],
+    avatarUrl: []
   },
   getters: {
+    getAvatarUrlFromState (state) {
+      return state.avatarUrl;
+    },
+    getUrlFromState (state) {
+      return state.url;
+    },
     getCategoryNameForProduct (state, catProductId) {
       let cat = []
       catProductId.forEach(el => {
@@ -93,21 +101,36 @@ export default createStore({
     },
   },
   mutations: {
+    UrlUpdate (state) {
+      state.url = []
+      state.avatarUrl = []
+    },
     ProductSearch (state, filteredProduct) {
       state.productsDB = filteredProduct;
     },
   },
   actions: {
-    upload(context, file) {
-      let storageRef = ref(Storage, 'products-images/' + file.name);
-      uploadBytes(storageRef, file)
+    upload(context, post) {
+      for (let i = 0; i < post.files.length; i++) {
+      let storageRef = ref(Storage, 'products-images/' + post.files[i].name);
+      uploadBytes(storageRef, post.files[i])
           .then(() => {
               console.log('done');
+              getDownloadURL(ref(Storage, 'products-images/' + post.files[i].name))
+              .then((url) => {
+                if (post.trigger == 1) {
+                  context.state.avatarUrl.push(url);
+                }
+                if (post.trigger == 2) {
+                  context.state.url.push(url);
+                }
+                console.log('url',context.state.url);
+                console.log('avatar',context.state.avatarUrl);
+
+              });
           });
-          getDownloadURL(ref(Storage, 'products-images/' + file.name))
-          .then((url) => {
-            console.log(url);
-          });
+        }
+      
   },
     fetchProducts(context) {
       let products = [];

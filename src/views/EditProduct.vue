@@ -107,30 +107,36 @@
                 </div>
                 <div class="col-4">
                     <div class="row">
-                        <div class="col-6">      
+                        <div class="col-6" v-if="!DawnloadAvatarURL.length">      
                             <img :src="EditProduct.avatar" class="img-thumbnail img-fluid avatar-view" alt="">
+                        </div>
+                        <div class="col-6" v-if="!!DawnloadAvatarURL.length">      
+                            <img :src="DawnloadAvatarURL[0]" class="img-thumbnail img-fluid avatar-view" alt="">
                         </div>
                         <div class="col-6">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                                <button @click="StartUpload" class="btn btn-primary mr-md-2" 
-                                type="button">Add Gallery</button>
                                 <button @click="StartUploadGallary" class="btn btn-primary mr-md-2" 
+                                type="button">Add Gallery</button>
+                                <button @click="StartUpload" class="btn btn-primary mr-md-2" 
                                 type="button">Add avatar</button>
                             </div>
                             <input type="file" 
-                                id="formFileMultiple" multiple
+                                id="formFile"
                                 accept="image/*" style="display: none;"
                                 ref="fileInput"
-                                @change="onChange">
+                                @change="onChange($event, 1)">
                             <input type="file" 
                                 id="formFileMultiple" multiple
                                 accept="image/*" style="display: none;"
                                 ref="GalleryInput"
-                                @change="onChange">
+                                @change="onChange($event, 2)">
                             <div class="row">
                                 <div class="col-12">
                                     <img class="pre-view" v-for="foto, index in EditProduct.gallery" :key="index" :src="foto"/>
-                                    <img class="pre-view" :src="imageSrc" v-if="imageSrc"/>
+                                    <div v-if="DawnloadURL"> 
+                                        <img class="pre-view"  
+                                    v-for="img, index in DawnloadURL" :key="index" :src="img"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -150,9 +156,9 @@
                 <div clas="col-10">
                     <button type="button" 
                     @click="SaveProduct"
-                    class="btn btn-primary btn-lg save">Dalete</button>
+                    class="btn btn-primary btn-lg save">Save</button>
                     <router-link to="/" teg="button" type="button" 
-                    class="btn btn-secondary btn-lg">Cancel</router-link>
+                    class="btn btn-secondary btn-lg" @click="OnCancel">Cancel</router-link>
                 </div>
             </div>
         </div> 
@@ -181,12 +187,11 @@ export default {
     data: function() {
         return {
         id: this.$route.params.id,
-        imageSrc: '',
+        imageSrc: [],
         image: null,
         cat: '01',
         EditProduct: {},
-        CancelProduct: {},
-        price: null
+        price: null,
         }
     },
     methods: {
@@ -198,15 +203,19 @@ export default {
                 this.EditProduct.prices[newUnit.toLowerCase()] = {
                 unit: newUnit.toUpperCase(),
                 value: newValue
-                };
+                }
+            } else {
+                console.log('Price Error')
             }
-            
         }, 
         DelCategory (data) {
             if ((this.EditProduct.category.indexOf(data)) != -1) {
                 let index = this.EditProduct.category.indexOf(data);
                 this.EditProduct.category.splice(index, 1);
             } 
+        },
+        OnCancel () {
+            this.$store.commit('UrlUpdate');
         },
         SaveProduct () {
             console.log(this.EditProduct);
@@ -215,7 +224,7 @@ export default {
         changeCategory (data) {
             this.cat = data;
             if ((this.EditProduct.category.indexOf(this.cat)) != -1) {
-                console.log('alarm')
+                console.log('Category Error')
             } else {
                 this.EditProduct.category.push(this.cat);
             }
@@ -226,19 +235,32 @@ export default {
         StartUploadGallary () {
             this.$refs.GalleryInput.click();
         },
-        onChange (event) {
-            let file = event.target.files[0]
-            let reader = new FileReader()
-            reader.onload = () => {
-                this.imageSrc = reader.result
+        onChange (event, trig) {
+            this.imageSrc = []
+            let file = event.target.files
+            for (let i = 0; i < file.length; i++) {
+                let reader = new FileReader()
+                reader.onload = () => {
+                    this.imageSrc.push(reader.result)
+                }
+                reader.readAsDataURL(file[i])
             }
-            reader.readAsDataURL(file)
-            this.image = file   
-            this.$store.dispatch('upload', file);
-        }
+            this.image = file  
+            let Post = {
+                files: file,
+                trigger: trig
+            };
+            this.$store.dispatch('upload', Post);
+         }
         
     },
     computed: {
+        DawnloadAvatarURL () {
+            return this.$store.getters['getAvatarUrlFromState'];
+        },
+        DawnloadURL () {
+            return this.$store.getters['getUrlFromState'];
+        },
         getCategories () {
             return this.$store.getters['getCategoriesFromDB'];
         },
@@ -260,7 +282,6 @@ export default {
   },
   beforeUpdate () {
     this.EditProduct = this.$store.getters['getProduct'];
-    this.CancelProduct = this.$store.getters['getProduct'];
   }
   
 }
