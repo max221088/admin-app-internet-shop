@@ -218,7 +218,14 @@ export default {
             this.$store.commit('UrlUpdate');
         },
         SaveProduct () {
+            this.DawnloadURL.forEach((el) => {
+                this.EditProduct.gallery.push(el)
+            });
+            if (this.DawnloadAvatarURL.length){
+                this.EditProduct.avatar = this.DawnloadAvatarURL;
+            }
             console.log(this.EditProduct);
+            this.$store.commit('UrlUpdate');
             
         },
         changeCategory (data) {
