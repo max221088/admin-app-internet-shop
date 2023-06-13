@@ -47,7 +47,7 @@
                         <div class="col-3">
                             <p>Categories</p>
                         </div>
-                        <div class="col-7" v-if="EditProduct.title">
+                        <div class="col-7" v-if="EditProduct.category">
                             <div class="cat-container">
                                 <span v-for="cat, index in CatProduct" :key="index" 
                                 :data-id="cat.id">{{ cat.title }}, </span>
@@ -75,14 +75,14 @@
                         <div class="col-3">
                             <p>Prices</p>
                         </div>
-                        <div class="col-3" v-if="!!EditProduct.title">
+                        <div class="col-3" v-if="!!EditProduct.prices">
                             <textarea v-for="(item, index) in EditProduct.prices" :key="index"
                              class="form-control" 
                             style="resize:none;"
                             id="exampleFormControlTextarea1" 
                             rows="1" v-model="item.value"></textarea>  
                         </div>
-                        <div class="col-4" v-if="!!EditProduct.title">
+                        <div class="col-4" v-if="!!EditProduct.prices">
                             <textarea v-for="(item, index) in EditProduct.prices" :key="index"
                             readonly class="form-control" 
                             style="resize:none;"
@@ -187,6 +187,11 @@ export default {
     data: function() {
         return {
         id: this.$route.params.id,
+        new: {
+            category: [],
+            gallery: [],
+            prices: {},
+        },
         imageSrc: [],
         image: null,
         cat: '01',
@@ -223,6 +228,9 @@ export default {
             });
             if (this.DawnloadAvatarURL.length){
                 this.EditProduct.avatar = this.DawnloadAvatarURL;
+            }
+            if (!this.EditProduct.id){
+                this.EditProduct.id = Date.now().toString();
             }
             console.log(this.EditProduct);
             this.$store.commit('UrlUpdate');
@@ -288,7 +296,11 @@ export default {
     this.$store.dispatch('fetchCategories');
   },
   beforeUpdate () {
-    this.EditProduct = this.$store.getters['getProduct'];
+    if (this.id != 'new') {
+        this.EditProduct = this.$store.getters['getProduct'];
+    } else {
+        this.EditProduct = this.new;
+    }
   }
   
 }

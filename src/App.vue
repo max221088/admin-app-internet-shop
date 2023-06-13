@@ -11,6 +11,10 @@
             <router-link to="/" class="nav-link" aria-current="page">Products</router-link>
           </li>
           <li class="nav-item">
+            <router-link :to="{name: 'EditProduct' , params:{id:'new'}}" 
+            class="nav-link" aria-current="page">Add product</router-link>
+          </li>
+          <li class="nav-item">
             <router-link to="/about" class="nav-link" >Orders</router-link>
           </li>
           <li class="nav-item">
