@@ -119,7 +119,7 @@ export default createStore({
               getDownloadURL(ref(Storage, 'products-images/' + post.files[i].name))
               .then((url) => {
                 if (post.trigger == 1) {
-                  context.state.avatarUrl.push(url);
+                  context.state.avatarUrl = url;
                 }
                 if (post.trigger == 2) {
                   context.state.url.push(url);

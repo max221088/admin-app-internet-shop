@@ -15,34 +15,40 @@
     </tr>
     <tr>
       <th scope="col">
-        <select class="form-select form-select-sm" aria-label=".form-select-sm пример">
+        <select v-model="SortParam" @change="selelectedSort" class="form-select form-select-sm" aria-label=".form-select-sm пример">
           <option selected value="1">min to max</option>
           <option value="2">max to min</option>
         </select>
       </th>
       <th scope="col"></th>
       <th scope="col">
-        <input class="form-control form-control-sm" 
+        <input v-model="QueryTitle" @input="filteredProducts"
+        class="form-control form-control-sm" 
         type="text" placeholder="Title Search">
       </th>
       <th scope="col">
-        <select class="form-select form-select-sm" v-model="CatSelect" >
+        <select class="form-select form-select-sm" 
+        @change="filteredProducts" v-model="selectedCategory" >
           <option v-for="(item, index) in getCategories" 
           :key="index" :value="item.id" >{{ item.title }}</option>  
         </select>
+      
       </th>
       <th scope="col">
-        <input class="form-control form-control-sm" 
+        <input v-model="QueryDescr" @input="filteredProducts"
+        class="form-control form-control-sm" 
         type="text" placeholder="Description Search">
       </th>
       <th scope="col">
-        <select class="form-select form-select-sm" aria-label=".form-select-sm пример">
-          <option selected value="1">min to max</option>
-          <option value="2">max to min</option>
+        <select v-model="SortParam" @change="selelectedSort" 
+        class="form-select form-select-sm" aria-label=".form-select-sm пример">
+          <option selected value="3">min to max</option>
+          <option value="4">max to min</option>
         </select>
       </th>
       <th scope="col">
-        <select class="form-select form-select-sm" v-model="UnitSelect" >
+        <select class="form-select form-select-sm"  
+        @change="filteredProducts" v-model="UnitSelect">
           <option v-for="(item, index) in CatProduct" 
           :key="index" :value="item" >{{ item }}</option>  
         </select>
@@ -75,10 +81,71 @@ export default {
   data: () => {
     return {
       products: [],
-      CatSelect: '',
+      selectedCategory: '',
       UnitSelect: '',
       AllUnit: [],
+      SortParam: '',
+      SearchProduct: [],
+      QueryTitle: '',
+      QueryDescr: ''
     }
+  },
+  methods: {
+    filteredProducts( ) {
+      console.log(this.QueryDescr)
+      let prod = [];
+      prod = (this.selectedCategory || this.QueryTitle || this.QueryDescr)
+      ? this.SearchProduct.filter(product => {
+          return ((this.selectedCategory.length) 
+        ? product.category.some(category =>{
+          return (this.selectedCategory.indexOf(category) != (-1))
+          }) : true) 
+        ? Object.values(product.prices).forEach(el =>{
+          return (this.UnitSelect.indexOf(el.unit) != (-1))
+          }) : true
+        && ~product.title.toLowerCase().indexOf(this.QueryTitle.toLowerCase())
+        && ~product.description.toLowerCase().indexOf(this.QueryDescr.toLowerCase());
+      })
+      : this.SearchProduct
+      console.log(prod);
+    },
+      selelectedSort: function () {
+        this.products.sort(function (a, b) {
+            if (this.SortParam == 1) {
+                if (a.order > b.order) {
+                    return 1;
+                }
+                if (a.order < b.order) {
+                    return -1;
+                }
+            }
+            if (this.SortParam == 2) {
+                if (a.order < b.order) {
+                    return 1;
+                    }
+                if (a.order > b.order) {
+                    return -1;
+                }
+            }
+            if (this.SortParam == 3) {
+                if (a.prices.uah.value > b.prices.uah.value) {
+                    return 1;
+                }
+                if (a.prices.uah.value < b.prices.uah.value) {
+                    return -1;
+                }
+            }
+            if (this.SortParam == 4) {
+                if (a.prices.uah.value < b.prices.uah.value) {
+                    return 1;
+                }
+                if (a.prices.uah.value > b.prices.uah.value) {
+                    return -1;
+                }
+            }
+            return 0;
+        }.bind(this));
+    },
   },
   computed: {
     productsRender () {
@@ -104,7 +171,8 @@ export default {
     this.$store.dispatch('fetchProducts')
   },
   beforeUpdate () {
-    this.products = this.$store.getters['getProductsFromDB']
+    this.products = this.$store.getters['getProductsFromDB'];
+    this.SearchProduct = this.$store.getters['getProductsForSearch'];
   }
 
  }

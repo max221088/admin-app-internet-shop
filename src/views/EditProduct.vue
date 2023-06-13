@@ -111,7 +111,7 @@
                             <img :src="EditProduct.avatar" class="img-thumbnail img-fluid avatar-view" alt="">
                         </div>
                         <div class="col-6" v-if="!!DawnloadAvatarURL.length">      
-                            <img :src="DawnloadAvatarURL[0]" class="img-thumbnail img-fluid avatar-view" alt="">
+                            <img :src="DawnloadAvatarURL" class="img-thumbnail img-fluid avatar-view" alt="">
                         </div>
                         <div class="col-6">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
