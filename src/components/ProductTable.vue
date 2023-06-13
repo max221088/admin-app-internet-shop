@@ -15,7 +15,7 @@
     </tr>
     <tr>
       <th scope="col">
-        <select v-model="SortParam" @change="selelectedSort" class="form-select form-select-sm" aria-label=".form-select-sm пример">
+        <select v-model="SortParam" @change="selelectedSort" class="form-select form-select-sm">
           <option selected value="1">min to max</option>
           <option value="2">max to min</option>
         </select>
@@ -29,6 +29,7 @@
       <th scope="col">
         <select class="form-select form-select-sm" 
         @change="filteredProducts" v-model="selectedCategory" >
+        <option value="All" selected>All</option>
           <option v-for="(item, index) in getCategories" 
           :key="index" :value="item.id" >{{ item.title }}</option>  
         </select>
@@ -58,7 +59,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="item, index in products" :key="index">
+    <tr v-for="item, index in productsRender" :key="index">
       <th scope="row">{{ item.order }}</th>
       <td><img class="avatar" :src="item.avatar" alt="..."></td>
       <td>{{ item.title }}</td>
@@ -66,51 +67,70 @@
       <td>{{ item.short }}</td>
       <td >{{ item.prices.uah.value }}</td>
       <td >{{ item.prices.uah.unit }}</td>
-      <td><router-link :to="{name: 'EditProduct' , params:{id:item.id}}" >Edit</router-link></td>
-      <td>Delete</td>
+      <td><router-link :to="{name: 'EditProduct' , 
+        params:{id:item.id}}" ><span class="btn btn-success">Edit</span></router-link></td>
+      <td :data-id="item.id" :data-name="item.title" :data-index="index" @click="getDataForDel" 
+      data-bs-toggle="modal" data-bs-target="#exampleModalConfirm"><span class="btn btn-danger" >Delete</span></td>
     </tr>
   </tbody>
 </table>
+<ModalConfirm :msg="'Delete product '+delProd+' ?' " @DelProduct="DelProduct"></ModalConfirm>
   </div>
 </template>
 
 <script>
+import ModalConfirm from './ModalConfirm.vue'
+
 export default {
   name: 'HelloWorld',
+  components: {
+        ModalConfirm
+    },
   props: [],
   data: () => {
     return {
-      products: [],
+      delProd: '',
+      delId: '',
       selectedCategory: '',
-      UnitSelect: '',
+      UnitSelect: 'UAH',
       AllUnit: [],
-      SortParam: '',
+      SortParam: '1',
       SearchProduct: [],
       QueryTitle: '',
       QueryDescr: ''
     }
   },
   methods: {
+    getDataForDel (event) {
+      this.delProd = event.target.getAttribute('data-name');
+      this.delId = event.target.getAttribute('data-id');
+    },
+    DelProduct () {
+      this.$store.dispatch('deleteProductInDB', this.delId);
+      this.delProd = '';
+      this.delId = '';
+      this.$store.dispatch('fetchProducts')
+    },
     filteredProducts( ) {
-      console.log(this.QueryDescr)
       let prod = [];
-      prod = (this.selectedCategory || this.QueryTitle || this.QueryDescr)
+      prod = (this.selectedCategory || this.QueryTitle.length || this.QueryDescr.length)
       ? this.SearchProduct.filter(product => {
           return ((this.selectedCategory.length) 
         ? product.category.some(category =>{
-          return (this.selectedCategory.indexOf(category) != (-1))
+          return (this.selectedCategory.indexOf(category) != (-1) || this.selectedCategory === 'All')
           }) : true) 
-        ? Object.values(product.prices).forEach(el =>{
-          return (this.UnitSelect.indexOf(el.unit) != (-1))
-          }) : true
         && ~product.title.toLowerCase().indexOf(this.QueryTitle.toLowerCase())
-        && ~product.description.toLowerCase().indexOf(this.QueryDescr.toLowerCase());
+        && ~product.description.toLowerCase().indexOf(this.QueryDescr.toLowerCase())
       })
-      : this.SearchProduct
-      console.log(prod);
+      : this.SearchProduct;
+      this.products = prod
+      this.$store.commit('ProductSearch', prod);
+      console.log(prod)
+      console.log(this.$store.getters['getProductsFromDB'])
+      console.log(this.SearchProduct)
     },
       selelectedSort: function () {
-        this.products.sort(function (a, b) {
+        this.productsRender.sort(function (a, b) {
             if (this.SortParam == 1) {
                 if (a.order > b.order) {
                     return 1;
@@ -148,15 +168,15 @@ export default {
     },
   },
   computed: {
-    productsRender () {
-        return this.$store.getters['getProductsFromDB'];
-    },
+     productsRender () {
+         return this.$store.getters['getProductsFromDB'];
+     },
     getCategories () {
         return this.$store.getters['getCategoriesFromDB'];
     },
     CatProduct () {
       let unit = []
-      this.products.forEach(function (el) {
+      this.productsRender.forEach(function (el) {
         Object.values(el.prices).forEach(function (li) {
           if ((unit.indexOf(li.unit)) === -1) {
             unit.push(li.unit)
@@ -169,9 +189,9 @@ export default {
     created () {
     this.$store.dispatch('fetchCategories')
     this.$store.dispatch('fetchProducts')
+    
   },
   beforeUpdate () {
-    this.products = this.$store.getters['getProductsFromDB'];
     this.SearchProduct = this.$store.getters['getProductsForSearch'];
   }
 

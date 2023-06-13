@@ -28,10 +28,7 @@
                             <p>Item number</p>
                         </div>
                         <div class="col-9">
-                            <textarea readonly class="form-control" 
-                            style="resize:none;"
-                            id="exampleFormControlTextarea1" 
-                            rows="1" v-model="EditProduct.id"></textarea>
+                            <div class="cat-container">{{ EditProduct.id }}</div>
                         </div>
                     </div>
                     <div class="row">
@@ -83,11 +80,8 @@
                             rows="1" v-model="item.value"></textarea>  
                         </div>
                         <div class="col-4" v-if="!!EditProduct.prices">
-                            <textarea v-for="(item, index) in EditProduct.prices" :key="index"
-                            readonly class="form-control" 
-                            style="resize:none;"
-                            id="exampleFormControlTextarea1" 
-                            rows="1" v-model="item.unit"></textarea>  
+                            <div class="cat-container" v-for="(item, index) in EditProduct.prices" 
+                            :key="index">{{ item.unit }}</div>
                         </div>
                         <div class="col-1">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -190,7 +184,9 @@ export default {
         new: {
             category: [],
             gallery: [],
-            prices: {},
+            prices: {
+                uah:{}
+            },
         },
         imageSrc: [],
         image: null,
@@ -233,6 +229,7 @@ export default {
                 this.EditProduct.id = Date.now().toString();
             }
             console.log(this.EditProduct);
+            this.$store.dispatch('addProductToDB', this.EditProduct)
             this.$store.commit('UrlUpdate');
             
         },

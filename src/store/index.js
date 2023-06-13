@@ -13,10 +13,10 @@ import {
   getDocs, 
   collection, 
   doc, 
-  //setDoc, 
+  setDoc, 
   getDoc, 
   getFirestore,
-   //deleteDoc
+  deleteDoc
   } from "firebase/firestore";
 // import {  
 //   getAuth, 
@@ -110,6 +110,12 @@ export default createStore({
     },
   },
   actions: {
+    addProductToDB (context, product) {
+      return setDoc(doc(DB, 'Products', product.id), product);
+    },
+    deleteProductInDB (context, ID) {  
+      return deleteDoc(doc(DB, 'Products', ID))
+    },
     upload(context, post) {
       for (let i = 0; i < post.files.length; i++) {
       let storageRef = ref(Storage, 'products-images/' + post.files[i].name);
