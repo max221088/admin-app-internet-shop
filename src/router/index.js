@@ -19,7 +19,17 @@ const routes = [
     path: '/edit:id',
     name: 'EditProduct',
     component: () => import('../views/EditProduct.vue')
-  }
+  },
+  {
+    path: '/users/',
+    name: 'UsersTable',
+    component: () => import('../views/UsersTable.vue')
+  },
+  {
+    path: '/information/:id',
+    name: 'InformationView',
+    component: () => import('../views/InformationView.vue')
+  },
 ]
 
 const router = createRouter({

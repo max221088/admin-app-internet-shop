@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" id="exampleModalConfirm" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
        <div class="modal-dialog">
            <div class="modal-content">
              <div class="modal-header">
@@ -12,7 +12,7 @@
              <div class="modal-footer">
                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                <button type="button" class="btn btn-primary" 
-                 @click="DelPrice()" data-bs-dismiss="modal">Delete</button>
+                 @click="DelPrice()" data-bs-dismiss="modal">{{btnText}}</button>
              </div>
            </div>
        </div>
@@ -24,7 +24,7 @@
  <script>
  export default {
    name: 'ModalConfirm',
-   props: ['msg'],
+   props: ['msg', 'btnText'],
    data: function () {
      return {
        

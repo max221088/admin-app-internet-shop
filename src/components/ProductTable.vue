@@ -74,7 +74,8 @@
     </tr>
   </tbody>
 </table>
-<ModalConfirm :msg="'Delete product '+delProd+' ?' " @DelProduct="DelProduct"></ModalConfirm>
+<ModalConfirm id="exampleModalConfirm" :msg="'Delete product '+delProd+' ?' " 
+:btnText="'Delete'" @DelProduct="DelProduct"></ModalConfirm>
   </div>
 </template>
 

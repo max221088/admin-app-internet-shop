@@ -55,9 +55,22 @@ export default createStore({
     productsForSearch: [],
     categoriesDB: [],
     url: [],
-    avatarUrl: []
+    avatarUrl: [],
+    usersForSearch: [],
+    usersDB: [],
+    articlsDB: []
+
   },
   getters: {
+    getArticlsDB (state) {
+      return state.articlsDB;
+    },
+    getUsersForSearch (state) {
+      return state.usersForSearch;
+    },
+    getUsersDB (state) {
+      return state.usersDB;
+    },
     getAvatarUrlFromState (state) {
       return state.avatarUrl;
     },
@@ -108,10 +121,19 @@ export default createStore({
     ProductSearch (state, filteredProduct) {
       state.productsDB = filteredProduct;
     },
+    UsersSearch (state, filteredUser) {
+      state.usersDB = filteredUser;
+    },
   },
   actions: {
     addProductToDB (context, product) {
       return setDoc(doc(DB, 'Products', product.id), product);
+    },
+    addArticleToDB (context, EditArticle) {
+      return setDoc(doc(DB, EditArticle.chapter, EditArticle.Update.id), EditArticle.Update);
+    },
+    deleteArticleToDB (context, EditArticle) {
+      return deleteDoc(doc(DB, EditArticle.chapter, EditArticle.id));
     },
     deleteProductInDB (context, ID) {  
       return deleteDoc(doc(DB, 'Products', ID))
@@ -137,7 +159,26 @@ export default createStore({
           });
         }
       
-  },
+    },
+    fetchArticls(context, info) {
+      let articls = [];
+      getDataFromDB(info)
+        .then(data => {
+          data.forEach(list => {
+            articls.push(list.data());
+        });
+        articls.sort(function (a, b) {
+          if ((a.order) > (b.order)) {
+            return 1;
+          }
+          if ((a.order) < (b.order)) {
+            return -1;
+          }
+        });
+        console.log(articls);
+        context.state.articlsDB = articls;
+      })
+    },
     fetchProducts(context) {
       let products = [];
       getDataFromDB('Products')
@@ -156,6 +197,26 @@ export default createStore({
         console.log(products);
         context.state.productsForSearch = products;
         context.state.productsDB = products;
+      })
+    },
+    fetchUsers(context) {
+      let users = [];
+      getDataFromDB('Users')
+        .then(data => {
+          data.forEach(list => {
+            users.push(list.data());
+        });
+        users.sort(function (a, b) {
+          if ((a.name) > (b.name)) {
+            return 1;
+          }
+          if ((a.name) < (b.name)) {
+            return -1;
+          }
+        });
+        console.log(users);
+        context.state.usersForSearch = users;
+        context.state.usersDB = users;
       })
     },
     fetchCategories(context) {
