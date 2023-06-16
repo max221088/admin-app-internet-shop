@@ -1,6 +1,6 @@
 <template>
     <div class="wrop container">
-        <h4><span class="text-muted">Edit Product </span> {{ EditProduct.title }}</h4>
+        <h4><span class="text-muted">Edit Product </span> {{ editProduct.title }}</h4>
         <div class=" container">
             <div class="row">
                 <div class="col-8">
@@ -10,7 +10,7 @@
                         </div>
                         <div class="col-9">
                             <textarea class="form-control" id="exampleFormControlTextarea1" 
-                            v-model="EditProduct.title"></textarea>
+                            v-model="editProduct.title"></textarea>
                         </div>
                     </div>
                     <div class="row">
@@ -20,7 +20,7 @@
                         <div class="col-9">
                             <textarea class="form-control" id="exampleFormControlTextarea1" 
                             style="resize:none;"
-                            rows="1" v-model="EditProduct.order"></textarea>
+                            rows="1" v-model="editProduct.order"></textarea>
                         </div>
                     </div>
                     <div class="row">
@@ -28,7 +28,7 @@
                             <p>Item number</p>
                         </div>
                         <div class="col-9">
-                            <div class="cat-container">{{ EditProduct.id }}</div>
+                            <div class="cat-container">{{ editProduct.id }}</div>
                         </div>
                     </div>
                     <div class="row">
@@ -37,14 +37,14 @@
                         </div>
                         <div class="col-9">
                             <textarea class="form-control" id="exampleFormControlTextarea1" 
-                            v-model="EditProduct.short"></textarea>
+                            v-model="editProduct.short"></textarea>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-3">
                             <p>Categories</p>
                         </div>
-                        <div class="col-7" v-if="EditProduct.category">
+                        <div class="col-7" v-if="editProduct.category">
                             <div class="cat-container">
                                 <span v-for="cat, index in CatProduct" :key="index" 
                                 :data-id="cat.id">{{ cat.title }}, </span>
@@ -63,7 +63,7 @@
                                 data-bs-toggle="modal" data-bs-target="#exampleModalDel">X</button>
                             </div>
                             <ModalAddCategory :categories="getCategories" @AddCat="changeCategory"></ModalAddCategory>
-                            <ModalDelCategory v-if="EditProduct.title" 
+                            <ModalDelCategory v-if="editProduct.title" 
                             :categories="CatProduct" @DelCat="DelCategory"></ModalDelCategory>
                         </div>
                     </div>
@@ -72,15 +72,15 @@
                         <div class="col-3">
                             <p>Prices</p>
                         </div>
-                        <div class="col-3" v-if="!!EditProduct.prices">
-                            <textarea v-for="(item, index) in EditProduct.prices" :key="index"
+                        <div class="col-3" v-if="!!editProduct.prices">
+                            <textarea v-for="(item, index) in editProduct.prices" :key="index"
                              class="form-control" 
                             style="resize:none;"
                             id="exampleFormControlTextarea1" 
                             rows="1" v-model="item.value"></textarea>  
                         </div>
-                        <div class="col-4" v-if="!!EditProduct.prices">
-                            <div class="cat-container" v-for="(item, index) in EditProduct.prices" 
+                        <div class="col-4" v-if="!!editProduct.prices">
+                            <div class="cat-container up-case" v-for="(item, index) in editProduct.prices" 
                             :key="index">{{ item.unit }}</div>
                         </div>
                         <div class="col-1">
@@ -94,7 +94,7 @@
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <button class="btn btn-primary mr-md-2 btn-danger" data-bs-toggle="modal"
                                 data-bs-target="#exampleModalDelPrice" type="button">X</button>
-                                <ModalDelPrice :prices="EditProduct.prices" @DelPrice="DelPrice"></ModalDelPrice>
+                                <ModalDelPrice :prices="editProduct.prices" @DelPrice="DelPrice"></ModalDelPrice>
                             </div>
                         </div>
                     </div>
@@ -102,7 +102,7 @@
                 <div class="col-4">
                     <div class="row">
                         <div class="col-6" v-if="!DawnloadAvatarURL.length">      
-                            <img :src="EditProduct.avatar" class="img-thumbnail img-fluid avatar-view" alt="">
+                            <img :src="editProduct.avatar" class="img-thumbnail img-fluid avatar-view" alt="">
                         </div>
                         <div class="col-6" v-if="!!DawnloadAvatarURL.length">      
                             <img :src="DawnloadAvatarURL" class="img-thumbnail img-fluid avatar-view" alt="">
@@ -126,7 +126,7 @@
                                 @change="onChange($event, 2)">
                             <div class="row">
                                 <div class="col-12">
-                                    <img class="pre-view" v-for="foto, index in EditProduct.gallery" :key="index" :src="foto"/>
+                                    <img class="pre-view" v-for="foto, index in editProduct.gallery" :key="index" :src="foto"/>
                                     <div v-if="DawnloadURL"> 
                                         <img class="pre-view"  
                                     v-for="img, index in DawnloadURL" :key="index" :src="img"/>
@@ -143,7 +143,7 @@
                 </div>
                 <div class="col-10">
                     <textarea  name="editor" class="form-control" id="exampleFormControlTextarea1 editor" 
-                    rows="8" v-model="EditProduct.description"></textarea>
+                    rows="8" v-model="editProduct.description"></textarea>
                 </div>
             </div>
             <div class="row">
@@ -185,24 +185,27 @@ export default {
             category: [],
             gallery: [],
             prices: {
-                uah:{}
+                uah:{
+                    value: 0,
+                    unit: 'uah'
+                }
             },
         },
         imageSrc: [],
         image: null,
         cat: '01',
-        EditProduct: {},
+        editProduct: {},
         price: null,
         }
     },
     methods: {
         DelPrice (delUnit) {
-           delete this.EditProduct.prices[delUnit.toLowerCase()];
+           delete this.editProduct.prices[delUnit.toLowerCase()];
         },
         AddNewPrice(newUnit, newValue) {
-            if ((typeof this.EditProduct.prices[newUnit.toLowerCase()]) === "undefined") {
-                this.EditProduct.prices[newUnit.toLowerCase()] = {
-                unit: newUnit.toUpperCase(),
+            if ((typeof this.editProduct.prices[newUnit.toLowerCase()]) === "undefined") {
+                this.editProduct.prices[newUnit.toLowerCase()] = {
+                unit: newUnit.toLowerCase(),
                 value: newValue
                 }
             } else {
@@ -210,9 +213,9 @@ export default {
             }
         }, 
         DelCategory (data) {
-            if ((this.EditProduct.category.indexOf(data)) != -1) {
-                let index = this.EditProduct.category.indexOf(data);
-                this.EditProduct.category.splice(index, 1);
+            if ((this.editProduct.category.indexOf(data)) != -1) {
+                let index = this.editProduct.category.indexOf(data);
+                this.editProduct.category.splice(index, 1);
             } 
         },
         OnCancel () {
@@ -220,25 +223,25 @@ export default {
         },
         SaveProduct () {
             this.DawnloadURL.forEach((el) => {
-                this.EditProduct.gallery.push(el)
+                this.editProduct.gallery.push(el)
             });
             if (this.DawnloadAvatarURL.length){
-                this.EditProduct.avatar = this.DawnloadAvatarURL;
+                this.editProduct.avatar = this.DawnloadAvatarURL;
             }
-            if (!this.EditProduct.id){
-                this.EditProduct.id = Date.now().toString();
+            if (!this.editProduct.id){
+                this.editProduct.id = Date.now().toString();
             }
-            console.log(this.EditProduct);
-            this.$store.dispatch('addProductToDB', this.EditProduct)
+            console.log(this.editProduct);
+            this.$store.dispatch('addProductToDB', this.editProduct)
             this.$store.commit('UrlUpdate');
             
         },
         changeCategory (data) {
             this.cat = data;
-            if ((this.EditProduct.category.indexOf(this.cat)) != -1) {
+            if ((this.editProduct.category.indexOf(this.cat)) != -1) {
                 console.log('Category Error')
             } else {
-                this.EditProduct.category.push(this.cat);
+                this.editProduct.category.push(this.cat);
             }
         },
         StartUpload () {
@@ -278,7 +281,7 @@ export default {
         },
         CatProduct () {
             let cat = []
-            this.EditProduct.category.forEach(el => {
+            this.editProduct.category.forEach(el => {
                 for (let i = 0; i< this.getCategories.length; i++) {
                     if (el === this.getCategories[i].id) {
                         cat.push(this.getCategories[i])
@@ -294,9 +297,9 @@ export default {
   },
   beforeUpdate () {
     if (this.id != 'new') {
-        this.EditProduct = this.$store.getters['getProduct'];
+        this.editProduct = this.$store.getters['getProduct'];
     } else {
-        this.EditProduct = this.new;
+        this.editProduct = this.new;
     }
   }
   

@@ -41,8 +41,8 @@
           </li>
         </ul>
         <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
-          <button class="btn btn-outline-success" type="submit">Поиск</button>
+          <!-- <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск"> -->
+          <button class="btn btn-outline-success" type="submit">Выход</button>
         </form>
       </div>
     </div>

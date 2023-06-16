@@ -226,7 +226,7 @@ export default createStore({
           data.forEach(list => {
             context.state.categoriesDB.push(list.data());
         });
-        //console.log(context.state.categoriesDB);
+        console.log(context.state.categoriesDB);
       })
     },
     fetchProductFromID (context, ID) {

@@ -40,8 +40,6 @@
             this.$emit('DelPrice', this.unit)
         }
         this.unit = '';
-        
-       //this.$emit('AddPrice', this.cat)
      }
    }
  }

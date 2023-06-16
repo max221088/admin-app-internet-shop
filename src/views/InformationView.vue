@@ -36,7 +36,7 @@
                 <div class="row">
                     <p>Content</p>
                     <textarea class="form-control" rows="8" id="exampleFormControlTextarea1" 
-                            v-model="article.content"></textarea>
+                        v-model="article.content"></textarea>
                 </div>
             </div>
         </div>
@@ -65,8 +65,7 @@ export default {
         return {
             id: this.$route.params.id[0].toUpperCase()
                 + this.$route.params.id.slice(1),
-            index: ''
-            
+            index: '' 
         }
     },
     methods: {
@@ -103,9 +102,7 @@ export default {
             console.log(EditArticle)
             this.$store.dispatch('addArticleToDB', EditArticle );
             this.$store.dispatch('fetchArticls', this.id);
-
-        }
-        
+        }  
     },
     computed: {
         renderInfo () {
@@ -114,14 +111,7 @@ export default {
     },
     created: function () {
         this.$store.dispatch('fetchArticls', this.id);
-        //this.EditInfo = this.renderInfo;
-    //console.log(this.EditInfo);
-  },
-  beforeUpdate () {
-    //this.EditInfo = this.$store.getters['getArticlsDB'];
-
-  }
-  
+  }  
 }
 
 </script>

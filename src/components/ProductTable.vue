@@ -15,14 +15,14 @@
     </tr>
     <tr>
       <th scope="col">
-        <select v-model="SortParam" @change="selelectedSort" class="form-select form-select-sm">
+        <select v-model="sortParam" @change="selelectedSort" class="form-select form-select-sm">
           <option selected value="1">min to max</option>
           <option value="2">max to min</option>
         </select>
       </th>
       <th scope="col"></th>
       <th scope="col">
-        <input v-model="QueryTitle" @input="filteredProducts"
+        <input v-model="queryTitle" @input="filteredProducts"
         class="form-control form-control-sm" 
         type="text" placeholder="Title Search">
       </th>
@@ -36,12 +36,12 @@
       
       </th>
       <th scope="col">
-        <input v-model="QueryDescr" @input="filteredProducts"
+        <input v-model="queryDescr" @input="filteredProducts"
         class="form-control form-control-sm" 
         type="text" placeholder="Description Search">
       </th>
       <th scope="col">
-        <select v-model="SortParam" @change="selelectedSort" 
+        <select v-model="sortParam" @change="selelectedSort" 
         class="form-select form-select-sm" aria-label=".form-select-sm пример">
           <option selected value="3">min to max</option>
           <option value="4">max to min</option>
@@ -49,9 +49,11 @@
       </th>
       <th scope="col">
         <select class="form-select form-select-sm"  
-        @change="filteredProducts" v-model="UnitSelect">
+        @change="filteredProducts" v-model="unitSelect">
           <option v-for="(item, index) in CatProduct" 
-          :key="index" :value="item" >{{ item }}</option>  
+          :key="index" :value="item" >
+          <span class="up-case">{{ item }}</span>
+        </option>  
         </select>
       </th>
       <th scope="col"></th>
@@ -61,16 +63,18 @@
   <tbody>
     <tr v-for="item, index in productsRender" :key="index">
       <th scope="row">{{ item.order }}</th>
-      <td><img class="avatar" :src="item.avatar" alt="..."></td>
+      <td><img class="avatar" :src="item.avatar" ></td>
       <td>{{ item.title }}</td>
       <td>{{ item.category }}</td>
+      <!-- <td><span v-for="name, index in item.category" :key="index">{{ CatName(name) }}</span></td> -->
       <td>{{ item.short }}</td>
-      <td >{{ item.prices.uah.value }}</td>
-      <td >{{ item.prices.uah.unit }}</td>
+      <td>{{ item.prices[unitSelect].value }}</td>
+      <td class="up-case">{{ item.prices[unitSelect].unit }}</td>
       <td><router-link :to="{name: 'EditProduct' , 
         params:{id:item.id}}" ><span class="btn btn-success">Edit</span></router-link></td>
-      <td :data-id="item.id" :data-name="item.title" :data-index="index" @click="getDataForDel" 
-      data-bs-toggle="modal" data-bs-target="#exampleModalConfirm"><span class="btn btn-danger" >Delete</span></td>
+      <td data-bs-toggle="modal" data-bs-target="#exampleModalConfirm"><span 
+        :data-id="item.id" :data-name="item.title"  @click="getDataForDel($event)" 
+        class="btn btn-danger" >Delete</span></td>
     </tr>
   </tbody>
 </table>
@@ -93,12 +97,11 @@ export default {
       delProd: '',
       delId: '',
       selectedCategory: '',
-      UnitSelect: 'UAH',
-      AllUnit: [],
-      SortParam: '1',
-      SearchProduct: [],
-      QueryTitle: '',
-      QueryDescr: ''
+      unitSelect: 'uah',
+      sortParam: '1',
+      searchProduct: [],
+      queryTitle: '',
+      queryDescr: ''
     }
   },
   methods: {
@@ -114,25 +117,23 @@ export default {
     },
     filteredProducts( ) {
       let prod = [];
-      prod = (this.selectedCategory || this.QueryTitle.length || this.QueryDescr.length)
-      ? this.SearchProduct.filter(product => {
+      console.log(this.unitSelect)
+      prod = (this.selectedCategory || this.queryTitle.length || this.queryDescr.length)
+      ? this.searchProduct.filter(product => {
           return ((this.selectedCategory.length) 
         ? product.category.some(category =>{
           return (this.selectedCategory.indexOf(category) != (-1) || this.selectedCategory === 'All')
           }) : true) 
-        && ~product.title.toLowerCase().indexOf(this.QueryTitle.toLowerCase())
-        && ~product.description.toLowerCase().indexOf(this.QueryDescr.toLowerCase())
+        && ~product.title.toLowerCase().indexOf(this.queryTitle.toLowerCase())
+        && ~product.description.toLowerCase().indexOf(this.queryDescr.toLowerCase())
       })
-      : this.SearchProduct;
-      this.products = prod
+      : this.searchProduct;
       this.$store.commit('ProductSearch', prod);
       console.log(prod)
-      console.log(this.$store.getters['getProductsFromDB'])
-      console.log(this.SearchProduct)
     },
       selelectedSort: function () {
         this.productsRender.sort(function (a, b) {
-            if (this.SortParam == 1) {
+            if (this.sortParam == 1) {
                 if (a.order > b.order) {
                     return 1;
                 }
@@ -140,7 +141,7 @@ export default {
                     return -1;
                 }
             }
-            if (this.SortParam == 2) {
+            if (this.sortParam == 2) {
                 if (a.order < b.order) {
                     return 1;
                     }
@@ -148,7 +149,7 @@ export default {
                     return -1;
                 }
             }
-            if (this.SortParam == 3) {
+            if (this.sortParam == 3) {
                 if (a.prices.uah.value > b.prices.uah.value) {
                     return 1;
                 }
@@ -156,7 +157,7 @@ export default {
                     return -1;
                 }
             }
-            if (this.SortParam == 4) {
+            if (this.sortParam == 4) {
                 if (a.prices.uah.value < b.prices.uah.value) {
                     return 1;
                 }
@@ -169,6 +170,15 @@ export default {
     },
   },
   computed: {
+    CatName (id) {
+      let nameCat = []
+      for (let i = 0; i < this.getCategories.length; i++) {
+          if (this.getCategories[i].id === id) {
+            nameCat.push(this.getCategories[i].title)
+          }
+      }
+      return nameCat
+    },
      productsRender () {
          return this.$store.getters['getProductsFromDB'];
      },
@@ -193,7 +203,7 @@ export default {
     
   },
   beforeUpdate () {
-    this.SearchProduct = this.$store.getters['getProductsForSearch'];
+    this.searchProduct = this.$store.getters['getProductsForSearch'];
   }
 
  }
