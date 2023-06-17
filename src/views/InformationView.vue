@@ -21,10 +21,10 @@
                     <option value='10'>10</option>
                 </select>
                 <button class="btn btn-primary mr-md-2 btn-danger mt-3" 
-                    data-bs-toggle="modal" :index="index" @click="GetId($event)"
+                    data-bs-toggle="modal" :index="index" @click="getId($event)"
                     data-bs-target="#exampleModalConfirmDel" type="button">Del</button>
                 <button class="btn btn-primary mr-md-2 btn-success mt-3" 
-                    data-bs-toggle="modal" :index="index" @click="GetId($event)"
+                    data-bs-toggle="modal" :index="index" @click="getId($event)"
                     data-bs-target="#exampleModalConfirmSave" type="button">Save</button>
             </div>
             <div class="col-11">
@@ -42,11 +42,11 @@
         </div>
     </div>
     <ModalConfirm id="exampleModalConfirmAdd" :msg="'Add new Article ?' " 
-        :btnText="'Add'" @DelProduct="AddArticle"></ModalConfirm>
+        :btnText="'Add'" @DelProduct="addArticle"></ModalConfirm>
     <ModalConfirm id="exampleModalConfirmDel" :msg="'Delete this Article ?'" 
-        :btnText="'Delete'" @DelProduct="DelArticle"></ModalConfirm>
+        :btnText="'Delete'" @DelProduct="delArticle"></ModalConfirm>
     <ModalConfirm id="exampleModalConfirmSave" :msg="'Save this Article ?'" 
-        :btnText="'Save'" @DelProduct="SaveArticle"></ModalConfirm>
+        :btnText="'Save'" @DelProduct="saveArticle"></ModalConfirm>
   </div>
 </template>
 
@@ -69,10 +69,10 @@ export default {
         }
     },
     methods: {
-        GetId ($event) {
+        getId ($event) {
             this.index = $event.target.getAttribute('index');
         },
-        DelArticle () {
+        delArticle () {
             let EditArticle = {
                 chapter: this.id,
                 id: this.renderInfo[this.index].id
@@ -81,7 +81,7 @@ export default {
             this.$store.dispatch('deleteArticleToDB', EditArticle );
             this.$store.dispatch('fetchArticls', this.id);
         },
-        AddArticle () {
+        addArticle () {
             let EditArticle = {
                 chapter: this.id,
                 Update: {
@@ -94,7 +94,7 @@ export default {
             this.$store.dispatch('addArticleToDB', EditArticle );
             this.$store.dispatch('fetchArticls', this.id);
         },
-        SaveArticle () {
+        saveArticle () {
             let EditArticle = {
                 chapter: this.id,
                 Update: this.renderInfo[this.index]

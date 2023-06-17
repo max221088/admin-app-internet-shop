@@ -46,7 +46,7 @@
                         </div>
                         <div class="col-7" v-if="editProduct.category">
                             <div class="cat-container">
-                                <span v-for="cat, index in CatProduct" :key="index" 
+                                <span v-for="cat, index in catProduct" :key="index" 
                                 :data-id="cat.id">{{ cat.title }}, </span>
                             </div>   
                         </div>
@@ -64,54 +64,39 @@
                             </div>
                             <ModalAddCategory :categories="getCategories" @AddCat="changeCategory"></ModalAddCategory>
                             <ModalDelCategory v-if="editProduct.title" 
-                            :categories="CatProduct" @DelCat="DelCategory"></ModalDelCategory>
+                            :categories="catProduct" @DelCat="delCategory"></ModalDelCategory>
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="col-3">
-                            <p>Prices</p>
+                            <p>Price</p>
                         </div>
-                        <div class="col-3" v-if="!!editProduct.prices">
-                            <textarea v-for="(item, index) in editProduct.prices" :key="index"
+                        <div class="col-3" v-if="!!editProduct.price">
+                            <textarea 
                              class="form-control" 
                             style="resize:none;"
                             id="exampleFormControlTextarea1" 
-                            rows="1" v-model="item.value"></textarea>  
+                            rows="1" v-model="editProduct.price.value"></textarea>  
                         </div>
-                        <div class="col-4" v-if="!!editProduct.prices">
-                            <div class="cat-container up-case" v-for="(item, index) in editProduct.prices" 
-                            :key="index">{{ item.unit }}</div>
-                        </div>
-                        <div class="col-1">
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button class="btn btn-primary mr-md-2" data-bs-toggle="modal"
-                                data-bs-target="#exampleModalAddPrice" type="button">+</button>
-                                <ModalAddPrice @AddPrice="AddNewPrice"></ModalAddPrice>
-                            </div>
-                        </div>
-                        <div class="col-1">
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button class="btn btn-primary mr-md-2 btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#exampleModalDelPrice" type="button">X</button>
-                                <ModalDelPrice :prices="editProduct.prices" @DelPrice="DelPrice"></ModalDelPrice>
-                            </div>
+                        <div class="col-4" v-if="!!editProduct.price">
+                            <div class="cat-container up-case" >{{ editProduct.price.unit }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="row">
-                        <div class="col-6" v-if="!DawnloadAvatarURL.length">      
+                        <div class="col-6" v-if="!dawnloadAvatarURL.length">      
                             <img :src="editProduct.avatar" class="img-thumbnail img-fluid avatar-view" alt="">
                         </div>
-                        <div class="col-6" v-if="!!DawnloadAvatarURL.length">      
-                            <img :src="DawnloadAvatarURL" class="img-thumbnail img-fluid avatar-view" alt="">
+                        <div class="col-6" v-if="!!dawnloadAvatarURL.length">      
+                            <img :src="dawnloadAvatarURL" class="img-thumbnail img-fluid avatar-view" alt="">
                         </div>
                         <div class="col-6">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                                <button @click="StartUploadGallary" class="btn btn-primary mr-md-2" 
+                                <button @click="startUploadGallary" class="btn btn-primary mr-md-2" 
                                 type="button">Add Gallery</button>
-                                <button @click="StartUpload" class="btn btn-primary mr-md-2" 
+                                <button @click="startUpload" class="btn btn-primary mr-md-2" 
                                 type="button">Add avatar</button>
                             </div>
                             <input type="file" 
@@ -127,9 +112,9 @@
                             <div class="row">
                                 <div class="col-12">
                                     <img class="pre-view" v-for="foto, index in editProduct.gallery" :key="index" :src="foto"/>
-                                    <div v-if="DawnloadURL"> 
+                                    <div v-if="dawnloadURL"> 
                                         <img class="pre-view"  
-                                    v-for="img, index in DawnloadURL" :key="index" :src="img"/>
+                                    v-for="img, index in dawnloadURL" :key="index" :src="img"/>
                                     </div>
                                 </div>
                             </div>
@@ -149,10 +134,12 @@
             <div class="row">
                 <div clas="col-10">
                     <button type="button" 
-                    @click="SaveProduct"
+                     data-bs-toggle="modal" data-bs-target="#exampleModalSave"
                     class="btn btn-primary btn-lg save">Save</button>
+                    <ModalConfirm id="exampleModalSave" :msg="'Save product '+editProduct.title+' ?' " 
+                        :btnText="'Save'" @DelProduct="saveProduct"></ModalConfirm>
                     <router-link to="/" teg="button" type="button" 
-                    class="btn btn-secondary btn-lg" @click="OnCancel">Cancel</router-link>
+                    class="btn btn-secondary btn-lg" @click="onCancel">Cancel</router-link>
                 </div>
             </div>
         </div> 
@@ -165,8 +152,8 @@
 //import Editor from '../components/JoditEditor.vue'
 import ModalAddCategory from '../components/ModalAddCategory.vue'
 import ModalDelCategory from '../components/ModalDelCategory.vue'
-import ModalAddPrice from '../components/ModalAddPrice.vue'
-import ModalDelPrice from '../components/ModalDelPrice.vue'
+import ModalConfirm from '../components/ModalConfirm.vue'
+
 
 
 export default {
@@ -175,8 +162,7 @@ export default {
         //Editor
         ModalAddCategory,
         ModalDelCategory,
-        ModalAddPrice,
-        ModalDelPrice
+        ModalConfirm
     },
     data: function() {
         return {
@@ -184,49 +170,34 @@ export default {
         new: {
             category: [],
             gallery: [],
-            prices: {
-                uah:{
+            price: {
                     value: 0,
                     unit: 'uah'
                 }
-            },
         },
         imageSrc: [],
         image: null,
         cat: '01',
         editProduct: {},
-        price: null,
+        
         }
     },
     methods: {
-        DelPrice (delUnit) {
-           delete this.editProduct.prices[delUnit.toLowerCase()];
-        },
-        AddNewPrice(newUnit, newValue) {
-            if ((typeof this.editProduct.prices[newUnit.toLowerCase()]) === "undefined") {
-                this.editProduct.prices[newUnit.toLowerCase()] = {
-                unit: newUnit.toLowerCase(),
-                value: newValue
-                }
-            } else {
-                console.log('Price Error')
-            }
-        }, 
-        DelCategory (data) {
+        delCategory (data) {
             if ((this.editProduct.category.indexOf(data)) != -1) {
                 let index = this.editProduct.category.indexOf(data);
                 this.editProduct.category.splice(index, 1);
             } 
         },
-        OnCancel () {
+        onCancel () {
             this.$store.commit('UrlUpdate');
         },
-        SaveProduct () {
-            this.DawnloadURL.forEach((el) => {
+        saveProduct () {
+            this.dawnloadURL.forEach((el) => {
                 this.editProduct.gallery.push(el)
             });
-            if (this.DawnloadAvatarURL.length){
-                this.editProduct.avatar = this.DawnloadAvatarURL;
+            if (this.dawnloadAvatarURL.length){
+                this.editProduct.avatar = this.dawnloadAvatarURL;
             }
             if (!this.editProduct.id){
                 this.editProduct.id = Date.now().toString();
@@ -244,10 +215,10 @@ export default {
                 this.editProduct.category.push(this.cat);
             }
         },
-        StartUpload () {
+        startUpload () {
             this.$refs.fileInput.click();
         },
-        StartUploadGallary () {
+        startUploadGallary () {
             this.$refs.GalleryInput.click();
         },
         onChange (event, trig) {
@@ -270,16 +241,16 @@ export default {
         
     },
     computed: {
-        DawnloadAvatarURL () {
+        dawnloadAvatarURL () {
             return this.$store.getters['getAvatarUrlFromState'];
         },
-        DawnloadURL () {
+        dawnloadURL () {
             return this.$store.getters['getUrlFromState'];
         },
         getCategories () {
             return this.$store.getters['getCategoriesFromDB'];
         },
-        CatProduct () {
+        catProduct () {
             let cat = []
             this.editProduct.category.forEach(el => {
                 for (let i = 0; i< this.getCategories.length; i++) {

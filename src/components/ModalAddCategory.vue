@@ -15,7 +15,7 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
               <button type="button" class="btn btn-primary" 
-                @click="AddCategory()" data-bs-dismiss="modal">Add</button>
+                @click="addCategory()" data-bs-dismiss="modal">Add</button>
             </div>
           </div>
       </div>
@@ -34,7 +34,7 @@ export default {
     }
   },
   methods: {
-    AddCategory () {
+    addCategory () {
       this.$emit('AddCat', this.cat)
     }
   }

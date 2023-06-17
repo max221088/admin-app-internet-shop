@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <form class="d-flex m-3">
-            <input v-model="query" @input="SearchUser" class="form-control" type="text" placeholder="Search Query">
+            <input v-model="query" @input="searchUser" class="form-control" type="text" placeholder="Search Query">
         </form>
         <table class="table table-hover">
             <thead>
@@ -44,9 +44,9 @@ export default {
     }
   },
   methods: {
-    SearchUser () {
+    searchUser () {
         //let result = [];
-        let filtered = this.UsersForSearch.filter((el) => {
+        let filtered = this.usersForSearch.filter((el) => {
             return (el.name.toLowerCase().indexOf(this.query.toLowerCase()) != -1 
             || el.tel.toLowerCase().indexOf(this.query.toLowerCase()) != -1
             || el.email.toLowerCase().indexOf(this.query.toLowerCase()) != -1)
@@ -56,7 +56,7 @@ export default {
         
   },
   computed: {
-    UsersForSearch () {
+    usersForSearch () {
          return this.$store.getters['getUsersForSearch'];
      },
     usersRender () {

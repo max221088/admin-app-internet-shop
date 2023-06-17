@@ -8,7 +8,7 @@
       <th scope="col">Title</th>
       <th scope="col">Category</th>
       <th scope="col">Short Description</th>
-      <th scope="col">Value</th>
+      <th scope="col">Price</th>
       <th scope="col">Unit</th>
       <th scope="col">Edit</th>
       <th scope="col">Delete</th>
@@ -48,13 +48,6 @@
         </select>
       </th>
       <th scope="col">
-        <select class="form-select form-select-sm"  
-        @change="filteredProducts" v-model="unitSelect">
-          <option v-for="(item, index) in CatProduct" 
-          :key="index" :value="item" >
-          <span class="up-case">{{ item }}</span>
-        </option>  
-        </select>
       </th>
       <th scope="col"></th>
       <th scope="col"></th>
@@ -65,11 +58,11 @@
       <th scope="row">{{ item.order }}</th>
       <td><img class="avatar" :src="item.avatar" ></td>
       <td>{{ item.title }}</td>
-      <td>{{ item.category }}</td>
-      <!-- <td><span v-for="name, index in item.category" :key="index">{{ CatName(name) }}</span></td> -->
+      <!-- <td>{{ getCatName(item.category) }}</td> -->
+      <td><span v-for="id, index in item.category" :key="index" class="up-cap">{{ catName(id) + ' ' }}</span></td>
       <td>{{ item.short }}</td>
-      <td>{{ item.prices[unitSelect].value }}</td>
-      <td class="up-case">{{ item.prices[unitSelect].unit }}</td>
+      <td>{{ item.price.value }}</td>
+      <td class="up-case">{{ item.price.unit }}</td>
       <td><router-link :to="{name: 'EditProduct' , 
         params:{id:item.id}}" ><span class="btn btn-success">Edit</span></router-link></td>
       <td data-bs-toggle="modal" data-bs-target="#exampleModalConfirm"><span 
@@ -79,7 +72,7 @@
   </tbody>
 </table>
 <ModalConfirm id="exampleModalConfirm" :msg="'Delete product '+delProd+' ?' " 
-:btnText="'Delete'" @DelProduct="DelProduct"></ModalConfirm>
+:btnText="'Delete'" @DelProduct="delProduct"></ModalConfirm>
   </div>
 </template>
 
@@ -96,8 +89,7 @@ export default {
     return {
       delProd: '',
       delId: '',
-      selectedCategory: '',
-      unitSelect: 'uah',
+      selectedCategory: 'All',
       sortParam: '1',
       searchProduct: [],
       queryTitle: '',
@@ -105,11 +97,19 @@ export default {
     }
   },
   methods: {
+    catName (id) {
+      console.log(1)
+      for (let i = 0; i < this.getCategories.length; i++) {
+        if (this.getCategories[i].id === id) {
+          return this.getCategories[i].title
+        }
+      }
+    },
     getDataForDel (event) {
       this.delProd = event.target.getAttribute('data-name');
       this.delId = event.target.getAttribute('data-id');
     },
-    DelProduct () {
+    delProduct () {
       this.$store.dispatch('deleteProductInDB', this.delId);
       this.delProd = '';
       this.delId = '';
@@ -117,7 +117,6 @@ export default {
     },
     filteredProducts( ) {
       let prod = [];
-      console.log(this.unitSelect)
       prod = (this.selectedCategory || this.queryTitle.length || this.queryDescr.length)
       ? this.searchProduct.filter(product => {
           return ((this.selectedCategory.length) 
@@ -150,18 +149,18 @@ export default {
                 }
             }
             if (this.sortParam == 3) {
-                if (a.prices.uah.value > b.prices.uah.value) {
+                if (a.price.value < b.price.value) {
                     return 1;
                 }
-                if (a.prices.uah.value < b.prices.uah.value) {
+                if (a.price.value > b.price.value) {
                     return -1;
                 }
             }
             if (this.sortParam == 4) {
-                if (a.prices.uah.value < b.prices.uah.value) {
+                if (a.price.value > b.price.value) {
                     return 1;
                 }
-                if (a.prices.uah.value > b.prices.uah.value) {
+                if (a.price.value < b.price.value) {
                     return -1;
                 }
             }
@@ -170,31 +169,11 @@ export default {
     },
   },
   computed: {
-    CatName (id) {
-      let nameCat = []
-      for (let i = 0; i < this.getCategories.length; i++) {
-          if (this.getCategories[i].id === id) {
-            nameCat.push(this.getCategories[i].title)
-          }
-      }
-      return nameCat
-    },
      productsRender () {
          return this.$store.getters['getProductsFromDB'];
      },
     getCategories () {
         return this.$store.getters['getCategoriesFromDB'];
-    },
-    CatProduct () {
-      let unit = []
-      this.productsRender.forEach(function (el) {
-        Object.values(el.prices).forEach(function (li) {
-          if ((unit.indexOf(li.unit)) === -1) {
-            unit.push(li.unit)
-          }
-        })
-      })
-      return unit
     },
   },
     created () {

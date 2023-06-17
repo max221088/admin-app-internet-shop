@@ -62,6 +62,13 @@ export default createStore({
 
   },
   getters: {
+    getCatName (state, id) {
+      for (let i = 0; i < state.categoriesDB.length; i++) {
+        if (state.categoriesDB[i].id === id) {
+          return state.categoriesDB[i].title
+        }
+      }
+    },
     getArticlsDB (state) {
       return state.articlsDB;
     },

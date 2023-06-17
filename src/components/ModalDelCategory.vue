@@ -15,7 +15,7 @@
              <div class="modal-footer">
                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                <button type="button" class="btn btn-primary" 
-                 @click="DelCategory()" data-bs-dismiss="modal">Delete</button>
+                 @click="delCategory()" data-bs-dismiss="modal">Delete</button>
              </div>
            </div>
        </div>
@@ -34,7 +34,7 @@
      }
    },
    methods: {
-     DelCategory () {
+     delCategory () {
        this.$emit('DelCat', this.cat)
      }
    }
