@@ -98,7 +98,6 @@ export default {
   },
   methods: {
     catName (id) {
-      console.log(1)
       for (let i = 0; i < this.getCategories.length; i++) {
         if (this.getCategories[i].id === id) {
           return this.getCategories[i].title

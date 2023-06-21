@@ -26,9 +26,34 @@ const routes = [
     component: () => import('../views/UsersTable.vue')
   },
   {
-    path: '/information/:id',
-    name: 'InformationView',
-    component: () => import('../views/InformationView.vue')
+    path: '/orders/',
+    name: 'orders',
+    component: () => import('../views/OrdersView.vue')
+  },
+  {
+    path: '/information/about/',
+    name: 'about',
+    component: () => import('../views/info/AboutEditView.vue')
+  },
+  {
+    path: '/information/contacts/',
+    name: 'contacts',
+    component: () => import('../views/info/ContactsEditView.vue')
+  },
+  {
+    path: '/information/news/',
+    name: 'news',
+    component: () => import('../views/info/NewsEditView.vue')
+  },
+  {
+    path: '/information/waranty/',
+    name: 'waranty',
+    component: () => import('../views/info/WarantyEditView.vue')
+  },
+  {
+    path: '/information/social-link/',
+    name: 'social',
+    component: () => import('../views/info/SocialEditView.vue')
   },
 ]
 

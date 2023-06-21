@@ -54,17 +54,16 @@
 
 <script>
 
-import ModalConfirm from '../components/ModalConfirm.vue'
+import ModalConfirm from '/src/components/ModalConfirm.vue'
 
 export default {
-    name: 'InformationView',
+    name: 'NewsEditView',
     components: {
         ModalConfirm
     },
     data: function () {
         return {
-            id: this.$route.params.id[0].toUpperCase()
-                + this.$route.params.id.slice(1),
+            id: 'News',
             index: '' 
         }
     },

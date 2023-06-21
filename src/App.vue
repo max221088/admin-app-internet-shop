@@ -15,7 +15,7 @@
             class="nav-link" aria-current="page">Add product</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/about" class="nav-link" >Orders</router-link>
+            <router-link to="/orders" class="nav-link" >Orders</router-link>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#" >Categories</a>
@@ -28,15 +28,16 @@
               Information bar
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><router-link :to="{name: 'InformationView' , params:{id: 'about'}}" 
+              <li><router-link to="/information/about/" 
                 class="nav-link" aria-current="page">About</router-link></li>
-              <li><router-link :to="{name: 'InformationView' , params:{id: 'news'}}" 
+              <li><router-link to="/information/news/" 
                 class="nav-link" aria-current="page">News</router-link></li>
-              <li><router-link :to="{name: 'InformationView' , params:{id: 'contacts'}}" 
+              <li><router-link to="/information/contacts/" 
                 class="nav-link" aria-current="page">Contact</router-link></li>
-                <li><router-link :to="{name: 'InformationView' , params:{id: 'client-info'}}" 
-                class="nav-link" aria-current="page">For Client</router-link></li>
-              <li><a class="dropdown-item" href="#">Social link</a></li>
+              <li><router-link to="/information/waranty/"
+                class="nav-link" aria-current="page">Waranty Info</router-link></li>
+                <li><router-link to="/information/social-link/"
+                class="nav-link" aria-current="page">Social-link</router-link></li>
             </ul>
           </li>
         </ul>

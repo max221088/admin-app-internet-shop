@@ -58,10 +58,18 @@ export default createStore({
     avatarUrl: [],
     usersForSearch: [],
     usersDB: [],
-    articlsDB: []
+    articlsDB: [],
+    ordersForSearch: [],
+    ordersDB: []
 
   },
   getters: {
+    getOrdersForSearch (state) {
+      return state.ordersForSearch;
+    },
+    getOrdersDB (state) {
+      return state.ordersDB;
+    },
     getCatName (state, id) {
       for (let i = 0; i < state.categoriesDB.length; i++) {
         if (state.categoriesDB[i].id === id) {
@@ -133,6 +141,26 @@ export default createStore({
     },
   },
   actions: {
+    fetchOrders(context) {
+      let orders = [];
+      getDataFromDB('Orders')
+        .then(data => {
+          data.forEach(list => {
+            orders.push(list.data());
+        });
+        orders.sort(function (a, b) {
+          if ((a.id) < (b.id)) {
+            return 1;
+          }
+          if ((a.id) > (b.id)) {
+            return -1;
+          }
+        });
+        console.log(orders);
+        context.state.ordersForSearch = orders;
+        context.state.ordersDB = orders;
+      })
+    },
     addProductToDB (context, product) {
       return setDoc(doc(DB, 'Products', product.id), product);
     },
