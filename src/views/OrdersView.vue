@@ -11,32 +11,49 @@
       <th scope="col">Delivery Address</th>
       <th scope="col">Sum</th>
       <th scope="col">Status</th>
-      
+      <th scope="col">Add Status</th>
+      <th scope="col">Show Details</th>
     </tr>
     <tr>
       <th scope="col">
-        
+        <select v-model="sortParam" @change="selelectedSort" class="form-select form-select-sm">
+          <option selected value="1">now</option>
+          <option value="2">later</option>
+        </select>
       </th>
       <th scope="col"></th>
       <th scope="col">
-        
+        <input v-model="queryName" @input="filteredOrders"
+        class="form-control form-control-sm" 
+        type="text" placeholder="Name Search">
       </th>
       <th scope="col">
         
       </th>
       <th scope="col">
-        
+        <input v-model="queryTel" @input="filteredOrders"
+        class="form-control form-control-sm" 
+        type="text" placeholder="Tel Search">
       </th>
       <th scope="col">
         
       </th>
       <th scope="col">
+      </th>
+      <th scope="col">
+        <select v-model="selectedStatus" @change="filteredOrders" class="form-select form-select-sm">
+            <option selected value="all">All</option>
+            <option value="new">New</option>
+            <option value="in work">In worK</option>
+            <option value="sent">Sent</option>
+            <option value="completed">Completed</option>
+        </select>
       </th>
       <th scope="col"></th>
       <th scope="col"></th>
     </tr>
   </thead>
-  <tbody>
+  <tbody v-if="!!renderOrders[0]">
     <tr v-for="order, index in renderOrders" :key="index">
       <th scope="row">{{ getDate(order.id)}}</th>
       <td>{{order.id}}</td>
@@ -45,10 +62,13 @@
       <td>{{ order.tel }}</td>
       <td>{{ order.address }}</td>
       <td>{{ sumOrder(order.products) }}</td>
-      <td v-if="order.status">{{ order.status }}</td>
-      <td v-if="!order.status">New</td>
+      <td >{{ order.status }}</td>
       <td><router-link to="/"><span class="btn btn-success">Add status</span></router-link></td>
-      <td><router-link to="/"><span class="btn btn-success">Show Details</span></router-link></td>
+      <td>
+        <router-link :to="{name: 'orderView' , 
+        params:{id:order.id}}" ><span class="btn btn-success">Show Details</span></router-link>
+        <!-- <router-link to="/"><span class="btn btn-success">Show Details</span></router-link> -->
+    </td>
     </tr>
   </tbody>
 </table>
@@ -67,9 +87,49 @@ export default {
     data: function () {
         return {
             index: '' ,
+            sortParam: '1',
+            queryName: '',
+            queryTel: '',
+            selectedStatus: 'all'
         }
     },
     methods: {
+        filteredOrders( ) {
+      let ord = [];
+      ord = (this.selectedStatus || this.queryName.length || this.queryTel.length)
+      ? this.ordersForSearch.filter(order => {
+          return (((order.status.toLowerCase().indexOf(this.selectedStatus.toLowerCase()) != -1) 
+          || this.selectedStatus === 'all' )
+          )
+        && ~order.clientName.toLowerCase().indexOf(this.queryName.toLowerCase())
+        && ~order.tel.toLowerCase().indexOf(this.queryTel.toLowerCase())
+      })
+      : this.ordersForSearch;
+      this.$store.commit('ordersSearch', ord);
+      console.log(ord)
+    },
+    selelectedSort: function () {
+        this.renderOrders.sort(function (a, b) {
+            if (this.sortParam == 1) {
+                if (a.id < b.id) {
+                    return 1;
+                }
+                if (a.id > b.id) {
+                    return -1;
+                }
+            }
+            if (this.sortParam == 2) {
+                if (a.id > b.id) {
+                    return 1;
+                    }
+                if (a.id < b.id) {
+                    return -1;
+                }
+            
+            }
+            return 0;
+        }.bind(this));
+    },
         sumOrder (products) {
             let sum = 0;
             for (let i = 0; i < products.length; i++) {
@@ -85,7 +145,7 @@ export default {
     },
     computed: {
         ordersForSearch () {
-            return this.$store.getters['getOrdersDB'];
+            return this.$store.getters['getOrdersForSearch'];
         },
         renderOrders () {
             return this.$store.getters['getOrdersDB'];

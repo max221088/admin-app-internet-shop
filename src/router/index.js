@@ -55,6 +55,11 @@ const routes = [
     name: 'social',
     component: () => import('../views/info/SocialEditView.vue')
   },
+  {
+    path: '/order/:id',
+    name: 'orderView',
+    component: () => import('../views/OrderView.vue')
+  },
 ]
 
 const router = createRouter({

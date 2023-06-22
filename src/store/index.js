@@ -60,10 +60,14 @@ export default createStore({
     usersDB: [],
     articlsDB: [],
     ordersForSearch: [],
-    ordersDB: []
+    ordersDB: [],
+    order: []
 
   },
   getters: {
+    getOrderDB (state) {
+      return state.order;
+    },
     getOrdersForSearch (state) {
       return state.ordersForSearch;
     },
@@ -133,6 +137,9 @@ export default createStore({
       state.url = []
       state.avatarUrl = []
     },
+    ordersSearch (state, filteredOrders) {
+      state.ordersDB = filteredOrders;
+    },
     ProductSearch (state, filteredProduct) {
       state.productsDB = filteredProduct;
     },
@@ -141,6 +148,17 @@ export default createStore({
     },
   },
   actions: {
+    addOrderToDB (context, order) {
+      return setDoc(doc(DB, 'Orders', order.id), order);
+    },
+    fetchOrderFromID (context, ID) {
+      return getDocFromDB ('Orders', ID)
+      .then(data => {
+        context.state.order = [];
+        context.state.order = data.data();
+        console.log(context.state.order);
+        })
+      },
     fetchOrders(context) {
       let orders = [];
       getDataFromDB('Orders')
