@@ -4,7 +4,6 @@
            <div class="modal-content">
              <div class="modal-header">
                <h5 class="modal-title" id="exampleModalLabel">Chenge Category for Delete</h5>
-               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
              </div>
              <div class="modal-body">
                <select class="form-select" v-model="cat" >

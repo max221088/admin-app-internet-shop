@@ -5,7 +5,7 @@ import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject} from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -133,6 +133,9 @@ export default createStore({
     },
   },
   mutations: {
+    UrlDel (state, index) {
+      state.url.splice(index, 1)
+    },
     UrlUpdate (state) {
       state.url = []
       state.avatarUrl = []
@@ -190,6 +193,15 @@ export default createStore({
     },
     deleteProductInDB (context, ID) {  
       return deleteDoc(doc(DB, 'Products', ID))
+    },
+    delImg(context, img) {
+      for (let i = 0; i < img.length; i++) {
+      let storageRef = ref(Storage, img[i]);
+      deleteObject(storageRef)
+          .then(() => {
+              console.log('done');
+          });
+        }
     },
     upload(context, post) {
       for (let i = 0; i < post.files.length; i++) {

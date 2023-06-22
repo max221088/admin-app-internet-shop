@@ -110,11 +110,16 @@
                                 ref="GalleryInput"
                                 @change="onChange($event, 2)">
                             <div class="row">
-                                <div class="col-12">
-                                    <img class="pre-view" v-for="foto, index in editProduct.gallery" :key="index" :src="foto"/>
-                                    <div v-if="dawnloadURL"> 
-                                        <img class="pre-view"  
-                                    v-for="img, index in dawnloadURL" :key="index" :src="img"/>
+                                <div class="col-12 col-gallery">
+                                    <div class="img-icon" v-for="foto, index in editProduct.gallery" :key="index">
+                                        <img class="pre-view"  :src="foto"/>
+                                        <img @click="delImgEdit(index)" class="del-img-btn" :data-id="index" src='../assets/img/remove_icon.svg'/>
+                                    </div>
+                                    <div class="col-gallery" v-if="dawnloadURL"> 
+                                        <div class="img-icon" v-for="img, index in dawnloadURL" :key="index">
+                                            <img class="pre-view"  :src="img"/>
+                                        <img @click="delImgPreLoad(index)" class="del-img-btn" :data-id="index" src='../assets/img/remove_icon.svg'/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -138,8 +143,8 @@
                     class="btn btn-primary btn-lg save">Save</button>
                     <ModalConfirm id="exampleModalSave" :msg="'Save product '+editProduct.title+' ?' " 
                         :btnText="'Save'" @DelProduct="saveProduct"></ModalConfirm>
-                    <router-link to="/" teg="button" type="button" 
-                    class="btn btn-secondary btn-lg" @click="onCancel">Cancel</router-link>
+                    <button  type="button" 
+                    class="btn btn-secondary btn-lg" @click="onCancel">Cancel</button>
                 </div>
             </div>
         </div> 
@@ -168,6 +173,7 @@ export default {
         return {
         id: this.$route.params.id,
         new: {
+            title: 'New Product',
             category: [],
             gallery: [],
             price: {
@@ -183,6 +189,17 @@ export default {
         }
     },
     methods: {
+        delImgPreLoad(index) {
+            let img = [];
+            img.push(this.dawnloadURL[index]);
+            this.$store.dispatch('delImg', img);
+            this.$store.commit('UrlDel', index);
+        },
+        delImgEdit(index){
+            let img = [];
+            img.push(this.editProduct.gallery[index]);
+            this.$store.dispatch('delImg', img);
+        },
         delCategory (data) {
             if ((this.editProduct.category.indexOf(data)) != -1) {
                 let index = this.editProduct.category.indexOf(data);
@@ -190,7 +207,22 @@ export default {
             } 
         },
         onCancel () {
+            if (this.id === 'new') {
+                if (this.dawnloadURL.length || this.dawnloadAvatarURL.length) {
+                   let img = [];
+                    if (this.dawnloadURL.length) {
+                        this.dawnloadURL.forEach(el =>{
+                            img.push(el);
+                        })
+                    }
+                    if (this.dawnloadAvatarURL) {
+                        img.push(this.dawnloadAvatarURL.toString());
+                    } 
+                this.$store.dispatch('delImg', img)
+                }
+            }
             this.$store.commit('UrlUpdate');
+            this.$router.push({ path: '/' })
         },
         saveProduct () {
             this.dawnloadURL.forEach((el) => {
@@ -202,16 +234,13 @@ export default {
             if (!this.editProduct.id){
                 this.editProduct.id = Date.now().toString();
             }
-            console.log(this.editProduct);
             this.$store.dispatch('addProductToDB', this.editProduct)
             this.$store.commit('UrlUpdate');
-            
+            this.$router.push({ name: 'home' })
         },
         changeCategory (data) {
             this.cat = data;
-            if ((this.editProduct.category.indexOf(this.cat)) != -1) {
-                console.log('Category Error')
-            } else {
+            if ((this.editProduct.category.indexOf(this.cat)) === -1) {
                 this.editProduct.category.push(this.cat);
             }
         },
@@ -263,16 +292,18 @@ export default {
         }
     },
     created: function () {
-    this.$store.dispatch('fetchProductFromID', this.id);
-    this.$store.dispatch('fetchCategories');
-  },
-  beforeUpdate () {
-    if (this.id != 'new') {
-        this.editProduct = this.$store.getters['getProduct'];
-    } else {
-        this.editProduct = this.new;
+        if (this.id != 'new') {
+            this.$store.dispatch('fetchProductFromID', this.id);
+        }
+        this.$store.dispatch('fetchCategories');
+    },
+    beforeUpdate () {
+        if (this.id != 'new') {
+            this.editProduct = this.$store.getters['getProduct'];
+        } else {
+            this.editProduct = this.new;
+        }
     }
-  }
   
 }
 

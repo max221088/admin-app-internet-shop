@@ -66,7 +66,7 @@
       <td><router-link :to="{name: 'EditProduct' , 
         params:{id:item.id}}" ><span class="btn btn-success">Edit</span></router-link></td>
       <td data-bs-toggle="modal" data-bs-target="#exampleModalConfirm"><span 
-        :data-id="item.id" :data-name="item.title"  @click="getDataForDel($event)" 
+        :data-id="item.id" :data-name="item.title"  @click="getDataForDel($event, index)" 
         class="btn btn-danger" >Delete</span></td>
     </tr>
   </tbody>
@@ -89,6 +89,7 @@ export default {
     return {
       delProd: '',
       delId: '',
+      index: '',
       selectedCategory: 'All',
       sortParam: '1',
       searchProduct: [],
@@ -104,14 +105,25 @@ export default {
         }
       }
     },
-    getDataForDel (event) {
+    getDataForDel (event, index) {
       this.delProd = event.target.getAttribute('data-name');
       this.delId = event.target.getAttribute('data-id');
+      this.index = index
     },
     delProduct () {
+      let img = [];
+      img.push(this.productsRender[this.index].avatar);
+      for (let i = 0; i < this.productsRender[this.index].gallery.length; i++) {
+        img.push(this.productsRender[this.index].gallery[i])
+      }
+      console.log(img)
+      if (img.length) {
+        this.$store.dispatch('delImg', img);
+      }
       this.$store.dispatch('deleteProductInDB', this.delId);
       this.delProd = '';
       this.delId = '';
+      this.index = '';
       this.$store.dispatch('fetchProducts')
     },
     filteredProducts( ) {

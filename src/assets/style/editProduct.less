@@ -4,17 +4,43 @@
         width: 200px;
         height: 200px;
     }
-    .pre-view{
-        height: auto;
-        width: 40px;
-        margin-top: 10px;
-        margin-right: 10px;
-        border: 1px solid #999;
-        border-radius: 3px;
-    }
+    
     .row{
         padding: 3px;
     }
+    .col-gallery{
+        display: flex;
+        flex-wrap: wrap;
+        
+
+        .pre-view{
+            height: auto;
+            width: 40px;
+            margin-top: 10px;
+            margin-right: 10px;
+            
+            
+        }
+        .img-icon{
+            position: relative;
+            margin: 2px;
+            border: 1px solid #999;
+            border-radius: 3px;
+    
+            .del-img-btn{
+                position:absolute;
+                top: 0;
+                right: 0;
+                opacity: 0.2;
+
+                &:hover{
+                    opacity: 1;
+                }
+            }
+        }
+    }
+    
+    
     .save{
         margin-right: 30px ;
     }
