@@ -1,4 +1,15 @@
 <template>
+  <template v-if="!isLogin">
+    <div class="overlay">
+      <div class="log-win">
+        <div class="title-login">Login</div>
+        <input v-model="userCred.email" type="text" class="form-control login" placeholder="Email">
+        <input v-model="userCred.pass" type="password" class="form-control pass" placeholder="Password" >
+        <button @click="login()" type="button" class="btn btn-success mt-3">Enter</button>
+      </div>
+    </div>
+  </template>
+  <template v-if="isLogin">
     <nav class="navbar navbar-expand-lg navbar-light bg-light title-navbar">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">
@@ -43,7 +54,7 @@
         </ul>
         <form class="d-flex">
           <!-- <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск"> -->
-          <button class="btn btn-outline-success" type="submit">Выход</button>
+          <button @click="logout()" class="btn btn-outline-success" type="submit">Выход</button>
         </form>
       </div>
     </div>
@@ -51,7 +62,44 @@
   <div class="content-wropper">
     <router-view/>
   </div>
+  </template>
 </template>
+
+<script>
+
+export default {
+  name: 'App',
+  components: {
+    
+  },
+  data: () => {
+    return {
+        userCred: {
+          email: '',
+          pass: ''
+        }
+    }
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout');
+    },
+    login () {
+      this.$store.dispatch('login', this.userCred);
+    }
+  },
+  computed: {
+    isLogin () {
+         return this.$store.getters['getIsLogin'];
+     },
+    
+  },
+  created: function () {
+  
+  }
+}
+</script>
+
 
 <style lang="less">
 @import './assets/style/style.less';

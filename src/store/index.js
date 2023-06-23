@@ -18,11 +18,12 @@ import {
   getFirestore,
   deleteDoc
   } from "firebase/firestore";
-// import {  
-//   getAuth, 
-//   signOut, 
-//   signInWithEmailAndPassword
-// } from "firebase/auth";
+ import {  
+   getAuth, 
+   signOut, 
+   signInWithEmailAndPassword
+ } from "firebase/auth";
+
 // Your web app's Firebase configuration
 const app = initializeApp({
   apiKey: "AIzaSyAVJlSbSBMLK3lFnFLNsPIxE5C0ZFrJoFU",
@@ -36,7 +37,7 @@ const app = initializeApp({
 
 // Initialize Firebase
 const DB = getFirestore(app);
-//const AUTH = getAuth(app);
+const AUTH = getAuth(app);
 const Storage = getStorage();
 
 function getDocFromDB (deskID, colID) {
@@ -50,6 +51,7 @@ function getDataFromDB (colID) {
 
 export default createStore({
   state: {
+    isLogin: false,
     productsDB: [],
     product: [],
     productsForSearch: [],
@@ -65,6 +67,9 @@ export default createStore({
 
   },
   getters: {
+    getIsLogin (state) {
+      return state.isLogin;
+    },
     getOrderDB (state) {
       return state.order;
     },
@@ -151,6 +156,23 @@ export default createStore({
     },
   },
   actions: {
+    logout () {
+      signOut(AUTH)
+        .then((Credential) => {
+          console.log(Credential)
+        })
+    },
+    login (context, userCred) {
+      console.log(userCred)
+      signInWithEmailAndPassword(AUTH, userCred.email, userCred.pass) 
+        .then((Credential) => {
+          context.state.isLogin = true;
+          console.log(Credential)
+        })
+        .catch((er) => {
+          console.log(er.message);
+        })
+    },
     addOrderToDB (context, order) {
       return setDoc(doc(DB, 'Orders', order.id), order);
     },
