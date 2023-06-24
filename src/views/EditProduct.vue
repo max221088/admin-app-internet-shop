@@ -87,10 +87,10 @@
                 <div class="col-4">
                     <div class="row">
                         <div class="col-6" v-if="!dawnloadAvatarURL.length">      
-                            <img :src="editProduct.avatar" class="img-thumbnail img-fluid avatar-view" alt="">
+                            <img :src="editProduct.avatar" class="img-thumbnail img-fluid avatar-view" >
                         </div>
                         <div class="col-6" v-if="!!dawnloadAvatarURL.length">      
-                            <img :src="dawnloadAvatarURL" class="img-thumbnail img-fluid avatar-view" alt="">
+                            <img :src="dawnloadAvatarURL" class="img-thumbnail img-fluid avatar-view" >
                         </div>
                         <div class="col-6">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
@@ -173,7 +173,10 @@ export default {
         return {
         id: this.$route.params.id,
         new: {
+            order: '',
+            avatar: '',
             title: 'New Product',
+            description: '',
             category: [],
             gallery: [],
             price: {

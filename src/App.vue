@@ -29,7 +29,7 @@
             <router-link to="/orders" class="nav-link" >Orders</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" >Categories</a>
+            <router-link to="/categories-manager/" class="nav-link" >Categories Manager</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/users" class="nav-link" >Users</router-link>
@@ -54,7 +54,7 @@
         </ul>
         <form class="d-flex">
           <!-- <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск"> -->
-          <button @click="logout()" class="btn btn-outline-success" type="submit">Выход</button>
+          <button @click="logout()" class="btn btn-outline-success" type="submit">Exit</button>
         </form>
       </div>
     </div>
@@ -83,6 +83,7 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch('logout');
+      window.sessionStorage.clear()
     },
     login () {
       this.$store.dispatch('login', this.userCred);
@@ -95,7 +96,10 @@ export default {
     
   },
   created: function () {
-  
+    if (window.sessionStorage.length) {
+      this.userCred = JSON.parse(window.sessionStorage.login);
+      this.login()
+    }
   }
 }
 </script>

@@ -60,6 +60,11 @@ const routes = [
     name: 'orderView',
     component: () => import('../views/OrderView.vue')
   },
+  {
+    path: '/categories-manager/',
+    name: 'categoryManager',
+    component: () => import('../views/CategoryManager.vue')
+  },
 ]
 
 const router = createRouter({

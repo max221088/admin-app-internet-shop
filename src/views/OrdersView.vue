@@ -63,11 +63,12 @@
       <td>{{ order.address }}</td>
       <td>{{ sumOrder(order.products) }}</td>
       <td >{{ order.status }}</td>
-      <td><router-link to="/"><span class="btn btn-success">Add status</span></router-link></td>
+      <td><span @click="getIndex(index)" class="btn btn-success"
+        data-bs-toggle="modal" data-bs-target="#exampleModalStatusOrder">Add status</span></td>
       <td>
         <router-link :to="{name: 'orderView' , 
         params:{id:order.id}}" ><span class="btn btn-success">Show Details</span></router-link>
-        <!-- <router-link to="/"><span class="btn btn-success">Show Details</span></router-link> -->
+        <ModalChangeOrderStatus @ChangeStat="addStatus"></ModalChangeOrderStatus>
     </td>
     </tr>
   </tbody>
@@ -79,10 +80,12 @@
 
 <script>
 
+import ModalChangeOrderStatus from '../components/ModalChangeOrderStatus.vue'
+
 export default {
     name: 'OrdersView',
     components: {
-        
+      ModalChangeOrderStatus
     },
     data: function () {
         return {
@@ -94,7 +97,15 @@ export default {
         }
     },
     methods: {
-        filteredOrders( ) {
+      getIndex(index) {
+        this.index = index;
+      },
+      addStatus (newStatus) {
+        let order = this.renderOrders[this.index];
+        order.status = newStatus
+        this.$store.dispatch('addOrderToDB', order);
+      },
+      filteredOrders( ) {
       let ord = [];
       ord = (this.selectedStatus || this.queryName.length || this.queryTel.length)
       ? this.ordersForSearch.filter(order => {

@@ -167,10 +167,13 @@ export default createStore({
       signInWithEmailAndPassword(AUTH, userCred.email, userCred.pass) 
         .then((Credential) => {
           context.state.isLogin = true;
+          window.sessionStorage.setItem('login', JSON.stringify(userCred));
           console.log(Credential)
         })
-        .catch((er) => {
-          console.log(er.message);
+        .catch((error) => {
+          alert(error.message);
+          
+          
         })
     },
     addOrderToDB (context, order) {
@@ -203,6 +206,17 @@ export default createStore({
         context.state.ordersForSearch = orders;
         context.state.ordersDB = orders;
       })
+    },
+    deleteCategoryInDB (context, ID) { 
+      return deleteDoc(doc(DB, 'Сategories', ID))
+    },
+    updateCategoryInProducts (context, products) {
+      for (let i = 0; i < products.length; i++) {
+         setDoc(doc(DB, 'Products', products[i].id), products[i]);
+      }
+    },
+    addCategoryToDB (context, category) {
+      return setDoc(doc(DB, 'Сategories', category.id), category);
     },
     addProductToDB (context, product) {
       return setDoc(doc(DB, 'Products', product.id), product);

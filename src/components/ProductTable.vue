@@ -112,11 +112,12 @@ export default {
     },
     delProduct () {
       let img = [];
-      img.push(this.productsRender[this.index].avatar);
+      if (this.productsRender[this.index].avatar) {
+        img.push(this.productsRender[this.index].avatar);
+      }
       for (let i = 0; i < this.productsRender[this.index].gallery.length; i++) {
         img.push(this.productsRender[this.index].gallery[i])
       }
-      console.log(img)
       if (img.length) {
         this.$store.dispatch('delImg', img);
       }
@@ -134,8 +135,8 @@ export default {
         ? product.category.some(category =>{
           return (this.selectedCategory.indexOf(category) != (-1) || this.selectedCategory === 'All')
           }) : true) 
-        && ~product.title.toLowerCase().indexOf(this.queryTitle.toLowerCase())
-        && ~product.description.toLowerCase().indexOf(this.queryDescr.toLowerCase())
+        &&  ((product.title) ? ~product.title.toLowerCase().indexOf(this.queryTitle.toLowerCase()) :true)
+        &&  (product.description) ? ~product.description.toLowerCase().indexOf(this.queryDescr.toLowerCase()) :true
       })
       : this.searchProduct;
       this.$store.commit('ProductSearch', prod);
@@ -194,6 +195,7 @@ export default {
   },
   beforeUpdate () {
     this.searchProduct = this.$store.getters['getProductsForSearch'];
+    console.log(this.searchProduct)
   }
 
  }
