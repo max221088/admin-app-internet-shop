@@ -3,8 +3,6 @@
     <h3>Categories Manager</h3>
     <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModaAddNewCat" 
         type="submit">Add new Category</button>
-    <!-- data-bs-toggle="modal" data-bs-target="#exampleModalSave" -->
-    
     <div class="categories-table">
         <div class="row title-row">
             <div class="col-3 tab-title">

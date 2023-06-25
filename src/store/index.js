@@ -63,10 +63,14 @@ export default createStore({
     articlsDB: [],
     ordersForSearch: [],
     ordersDB: [],
-    order: []
+    order: [],
+    userData: []
 
   },
   getters: {
+    getUserData (state) {
+      return state.userData;
+    },
     getIsLogin (state) {
       return state.isLogin;
     },
@@ -156,6 +160,18 @@ export default createStore({
     },
   },
   actions: {
+    fetchUserFromID (context, ID) {
+      return getDocFromDB ('Users', ID)
+      .then(data => {
+        context.state.userData = [];
+        context.state.userData = data.data();
+        if (context.state.userData.role === 'admin'){
+          context.state.isLogin = true;
+        } else {
+          alert('wrong login or password')
+        }
+        })
+      },
     logout () {
       signOut(AUTH)
         .then((Credential) => {
@@ -166,16 +182,18 @@ export default createStore({
       console.log(userCred)
       signInWithEmailAndPassword(AUTH, userCred.email, userCred.pass) 
         .then((Credential) => {
-          context.state.isLogin = true;
-          window.sessionStorage.setItem('login', JSON.stringify(userCred));
-          console.log(Credential)
+          console.log(Credential.user.uid)
+          context.dispatch('fetchUserFromID', Credential.user.uid);
+            window.sessionStorage.setItem('login', JSON.stringify(userCred));
         })
         .catch((error) => {
           alert(error.message);
           
           
         })
+        
     },
+    
     addOrderToDB (context, order) {
       return setDoc(doc(DB, 'Orders', order.id), order);
     },
@@ -222,7 +240,8 @@ export default createStore({
       return setDoc(doc(DB, 'Products', product.id), product);
     },
     addArticleToDB (context, EditArticle) {
-      return setDoc(doc(DB, EditArticle.chapter, EditArticle.Update.id), EditArticle.Update);
+      //return setDoc(doc(DB, EditArticle.chapter, EditArticle.Update.id), EditArticle.Update);
+      return setDoc(doc(DB, 'Info', 'about'), EditArticle);
     },
     deleteArticleToDB (context, EditArticle) {
       return deleteDoc(doc(DB, EditArticle.chapter, EditArticle.id));
@@ -261,6 +280,24 @@ export default createStore({
         }
       
     },
+    fetchArticlesID (context, ID) {
+      return getDocFromDB ('Info', ID)
+      .then(data => {
+        let articls = [];
+        //context.state.order = [];
+        articls = data.data();
+        // articls.sort(function (a, b) {
+        //   if ((a.order) > (b.order)) {
+        //     return 1;
+        //   }
+        //   if ((a.order) < (b.order)) {
+        //     return -1;
+        //   }
+        // });
+        console.log(articls);
+        context.state.articlsDB = articls;
+        })
+      },
     fetchArticls(context, info) {
       let articls = [];
       getDataFromDB(info)

@@ -53,7 +53,6 @@
           </li>
         </ul>
         <form class="d-flex">
-          <!-- <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск"> -->
           <button @click="logout()" class="btn btn-outline-success" type="submit">Exit</button>
         </form>
       </div>
