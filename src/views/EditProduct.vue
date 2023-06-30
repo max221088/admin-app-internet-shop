@@ -177,6 +177,7 @@ export default {
             avatar: '',
             title: 'New Product',
             description: '',
+            reviews: [],
             category: [],
             gallery: [],
             price: {
