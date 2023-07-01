@@ -203,6 +203,8 @@ export default {
             let img = [];
             img.push(this.editProduct.gallery[index]);
             this.$store.dispatch('delImg', img);
+            this.editProduct.gallery.splice(index, 1)
+            
         },
         delCategory (data) {
             if ((this.editProduct.category.indexOf(data)) != -1) {
@@ -267,7 +269,8 @@ export default {
             this.image = file  
             let Post = {
                 files: file,
-                trigger: trig
+                trigger: trig,
+                id: this.id
             };
             this.$store.dispatch('upload', Post);
          }

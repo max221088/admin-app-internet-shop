@@ -11,7 +11,6 @@
                     <th scope="col">Adress</th>
                     <th scope="col">Email</th>
                     <th scope="col">Total Orders</th>
-                    <th scope="col">Registration Date</th>
                     <th scope="col"></th>
                 </tr> 
             </thead>
@@ -19,11 +18,13 @@
                 <tr v-for="item, index in usersRender" :key="index">
                     <th scope="row">{{ item.name }}</th>
                     <th scope="row">{{ item.tel }}</th>
-                    <td>{{ item.adress }}</td>
+                    <td>{{ item.address }}</td>
                     <td>{{ item.email }}</td>
-                    <td><span v-if="item.hystory">{{ item.hystory }}</span></td>
-                    <td >{{ item.id }}</td>
-                    <td >Look Order</td>
+                    <td><span >{{ item.history.length }}</span></td>
+                    <td ><router-link v-if="item.history.length" :to="{name: 'UserOrders' , params:{index:index}}"
+                         class="btn btn-link m-0">Look Order</router-link>
+                         <div v-if="!item.history.length">No Order</div>
+                    </td>
                 </tr>
             </tbody>
         </table>

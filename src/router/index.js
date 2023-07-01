@@ -52,6 +52,12 @@ const routes = [
     name: 'categoryManager',
     component: () => import('../views/CategoryManager.vue')
   },
+  {
+    path: '/user-orders/:index',
+    name: 'UserOrders',
+    props: true,
+    component: () => import('../views/UserOrdersView.vue')
+  },
 ]
 
 const router = createRouter({

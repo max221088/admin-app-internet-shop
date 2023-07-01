@@ -6,7 +6,7 @@
       <th scope="col">Date</th>
       <th scope="col">Order ID</th>
       <th scope="col">Client Name</th>
-      <th scope="col">Usrer ID</th>
+      <th scope="col">Usre ID</th>
       <th scope="col">Contact Number</th>
       <th scope="col">Delivery Address</th>
       <th scope="col">Sum</th>
@@ -44,7 +44,7 @@
         <select v-model="selectedStatus" @change="filteredOrders" class="form-select form-select-sm">
             <option selected value="all">All</option>
             <option value="new">New</option>
-            <option value="in work">In worK</option>
+            <option value="in work">In work</option>
             <option value="sent">Sent</option>
             <option value="completed">Completed</option>
         </select>

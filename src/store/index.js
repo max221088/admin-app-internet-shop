@@ -64,10 +64,14 @@ export default createStore({
     ordersForSearch: [],
     ordersDB: [],
     order: [],
-    userData: []
+    userData: [],
+    userOrders: []
 
   },
   getters: {
+    getUserOrders (state) {
+      return state.userOrders;
+    },
     getUserData (state) {
       return state.userData;
     },
@@ -142,6 +146,9 @@ export default createStore({
     },
   },
   mutations: {
+    userOrdersFilter (state, filteredOrders) {
+      state.userOrders = filteredOrders;
+    },
     UrlDel (state, index) {
       state.url.splice(index, 1)
     },
@@ -160,6 +167,17 @@ export default createStore({
     },
   },
   actions: {
+    fetchUsersOrders (context, ordersID) {
+      context.state.userOrders = [];
+      if (ordersID) {
+      for (let i = 0; i < ordersID.length; i++) {
+        getDocFromDB ('Orders', ordersID[i])
+        .then(data => {
+          context.state.userOrders.push(data.data());
+          })
+        }
+      }
+    },
     fetchUserFromID (context, ID) {
       return getDocFromDB ('Users', ID)
       .then(data => {
@@ -170,8 +188,8 @@ export default createStore({
         } else {
           alert('wrong login or password')
         }
-        })
-      },
+      })
+    },
     logout () {
       signOut(AUTH)
         .then()
@@ -184,10 +202,7 @@ export default createStore({
         })
         .catch((error) => {
           alert(error.message);
-          
-          
         })
-        
     },
     addOrderToDB (context, order) {
       return setDoc(doc(DB, 'Orders', order.id), order);
@@ -234,7 +249,6 @@ export default createStore({
     },
     addArticleToDB (context, EditArticle) {
       return setDoc(doc(DB, EditArticle.chapter, EditArticle.Update.id), EditArticle.Update);
-      //return setDoc(doc(DB, 'Info', 'about'), EditArticle);
     },
     deleteArticleToDB (context, EditArticle) {
       return deleteDoc(doc(DB, EditArticle.chapter, EditArticle.id));
@@ -251,10 +265,10 @@ export default createStore({
     },
     upload(context, post) {
       for (let i = 0; i < post.files.length; i++) {
-      let storageRef = ref(Storage, 'products-images/' + Date.now() + post.files[i].name);
+      let storageRef = ref(Storage, 'products-images/' + post.id + "/" + post.files[i].name);
       uploadBytes(storageRef, post.files[i])
           .then(() => {
-              getDownloadURL(ref(Storage, 'products-images/' + Date.now() + post.files[i].name))
+              getDownloadURL(ref(Storage, 'products-images/' + post.id + "/" + post.files[i].name))
               .then((url) => {
                 if (post.trigger == 1) {
                   context.state.avatarUrl = url;
