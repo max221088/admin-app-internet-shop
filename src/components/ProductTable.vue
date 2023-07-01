@@ -133,10 +133,11 @@ export default {
       ? this.searchProduct.filter(product => {
           return ((this.selectedCategory.length) 
         ? product.category.some(category =>{
-          return (this.selectedCategory.indexOf(category) != (-1) || this.selectedCategory === 'All')
-          }) : true) 
+          console.log((category.indexOf(this.selectedCategory) != (-1)) || this.selectedCategory === 'All')
+          return ((category.indexOf(this.selectedCategory) != (-1)) || this.selectedCategory === 'All')
+          }) : true)
         &&  ((product.title) ? ~product.title.toLowerCase().indexOf(this.queryTitle.toLowerCase()) :true)
-        &&  (product.description) ? ~product.description.toLowerCase().indexOf(this.queryDescr.toLowerCase()) :true
+        &&  ((product.description) ? ~product.description.toLowerCase().indexOf(this.queryDescr.toLowerCase()) :true)
       })
       : this.searchProduct;
       this.$store.commit('ProductSearch', prod);
@@ -145,34 +146,34 @@ export default {
       selelectedSort: function () {
         this.productsRender.sort(function (a, b) {
             if (this.sortParam == 1) {
-                if (a.order > b.order) {
+                if (Number(a.order) > Number(b.order)) {
                     return 1;
                 }
-                if (a.order < b.order) {
+                if (Number(a.order) < Number(b.order)) {
                     return -1;
                 }
             }
             if (this.sortParam == 2) {
-                if (a.order < b.order) {
+                if (Number(a.order) < Number(b.order)) {
                     return 1;
                     }
-                if (a.order > b.order) {
+                if (Number(a.order) > Number(b.order)) {
                     return -1;
                 }
             }
             if (this.sortParam == 3) {
-                if (a.price.value < b.price.value) {
+                if (Number(a.price.value) > Number(b.price.value)) {
                     return 1;
                 }
-                if (a.price.value > b.price.value) {
+                if (Number(a.price.value) < Number(b.price.value)) {
                     return -1;
                 }
             }
             if (this.sortParam == 4) {
-                if (a.price.value > b.price.value) {
+                if (Number(a.price.value) < Number(b.price.value)) {
                     return 1;
                 }
-                if (a.price.value < b.price.value) {
+                if (Number(a.price.value) > Number(b.price.value)) {
                     return -1;
                 }
             }

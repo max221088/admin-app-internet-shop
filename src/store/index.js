@@ -193,7 +193,6 @@ export default createStore({
         })
         
     },
-    
     addOrderToDB (context, order) {
       return setDoc(doc(DB, 'Orders', order.id), order);
     },
@@ -240,8 +239,8 @@ export default createStore({
       return setDoc(doc(DB, 'Products', product.id), product);
     },
     addArticleToDB (context, EditArticle) {
-      //return setDoc(doc(DB, EditArticle.chapter, EditArticle.Update.id), EditArticle.Update);
-      return setDoc(doc(DB, 'Info', 'about'), EditArticle);
+      return setDoc(doc(DB, EditArticle.chapter, EditArticle.Update.id), EditArticle.Update);
+      //return setDoc(doc(DB, 'Info', 'about'), EditArticle);
     },
     deleteArticleToDB (context, EditArticle) {
       return deleteDoc(doc(DB, EditArticle.chapter, EditArticle.id));
@@ -260,11 +259,11 @@ export default createStore({
     },
     upload(context, post) {
       for (let i = 0; i < post.files.length; i++) {
-      let storageRef = ref(Storage, 'products-images/' + post.files[i].name);
+      let storageRef = ref(Storage, 'products-images/' + Date.now() + post.files[i].name);
       uploadBytes(storageRef, post.files[i])
           .then(() => {
               console.log('done');
-              getDownloadURL(ref(Storage, 'products-images/' + post.files[i].name))
+              getDownloadURL(ref(Storage, 'products-images/' + Date.now() + post.files[i].name))
               .then((url) => {
                 if (post.trigger == 1) {
                   context.state.avatarUrl = url;
