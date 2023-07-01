@@ -174,15 +174,11 @@ export default createStore({
       },
     logout () {
       signOut(AUTH)
-        .then((Credential) => {
-          console.log(Credential)
-        })
+        .then()
     },
     login (context, userCred) {
-      console.log(userCred)
       signInWithEmailAndPassword(AUTH, userCred.email, userCred.pass) 
         .then((Credential) => {
-          console.log(Credential.user.uid)
           context.dispatch('fetchUserFromID', Credential.user.uid);
             window.sessionStorage.setItem('login', JSON.stringify(userCred));
         })
@@ -201,7 +197,6 @@ export default createStore({
       .then(data => {
         context.state.order = [];
         context.state.order = data.data();
-        console.log(context.state.order);
         })
       },
     fetchOrders(context) {
@@ -219,7 +214,6 @@ export default createStore({
             return -1;
           }
         });
-        console.log(orders);
         context.state.ordersForSearch = orders;
         context.state.ordersDB = orders;
       })
@@ -252,9 +246,7 @@ export default createStore({
       for (let i = 0; i < img.length; i++) {
       let storageRef = ref(Storage, img[i]);
       deleteObject(storageRef)
-          .then(() => {
-              console.log('done');
-          });
+          .then();
         }
     },
     upload(context, post) {
@@ -262,7 +254,6 @@ export default createStore({
       let storageRef = ref(Storage, 'products-images/' + Date.now() + post.files[i].name);
       uploadBytes(storageRef, post.files[i])
           .then(() => {
-              console.log('done');
               getDownloadURL(ref(Storage, 'products-images/' + Date.now() + post.files[i].name))
               .then((url) => {
                 if (post.trigger == 1) {
@@ -271,9 +262,6 @@ export default createStore({
                 if (post.trigger == 2) {
                   context.state.url.push(url);
                 }
-                console.log('url',context.state.url);
-                console.log('avatar',context.state.avatarUrl);
-
               });
           });
         }
@@ -283,17 +271,16 @@ export default createStore({
       return getDocFromDB ('Info', ID)
       .then(data => {
         let articls = [];
-        //context.state.order = [];
+        context.state.order = [];
         articls = data.data();
-        // articls.sort(function (a, b) {
-        //   if ((a.order) > (b.order)) {
-        //     return 1;
-        //   }
-        //   if ((a.order) < (b.order)) {
-        //     return -1;
-        //   }
-        // });
-        console.log(articls);
+        articls.sort(function (a, b) {
+          if ((a.order) > (b.order)) {
+            return 1;
+          }
+          if ((a.order) < (b.order)) {
+            return -1;
+          }
+        });
         context.state.articlsDB = articls;
         })
       },
@@ -305,14 +292,13 @@ export default createStore({
             articls.push(list.data());
         });
         articls.sort(function (a, b) {
-          if ((a.order) > (b.order)) {
+          if (Number(a.order) > Number(b.order)) {
             return 1;
           }
-          if ((a.order) < (b.order)) {
+          if (Number(a.order) < Number(b.order)) {
             return -1;
           }
         });
-        console.log(articls);
         context.state.articlsDB = articls;
       })
     },
@@ -331,7 +317,6 @@ export default createStore({
             return -1;
           }
         });
-        console.log(products);
         context.state.productsForSearch = products;
         context.state.productsDB = products;
       })
@@ -351,7 +336,6 @@ export default createStore({
             return -1;
           }
         });
-        console.log(users);
         context.state.usersForSearch = users;
         context.state.usersDB = users;
       })
@@ -363,7 +347,6 @@ export default createStore({
           data.forEach(list => {
             context.state.categoriesDB.push(list.data());
         });
-        console.log(context.state.categoriesDB);
       })
     },
     fetchProductFromID (context, ID) {
@@ -371,7 +354,6 @@ export default createStore({
       .then(data => {
         context.state.product = [];
         context.state.product = data.data();
-        console.log(context.state.product);
         })
       },
   },

@@ -117,7 +117,6 @@ export default {
       })
       : this.ordersForSearch;
       this.$store.commit('ordersSearch', ord);
-      console.log(ord)
     },
     selelectedSort: function () {
         this.renderOrders.sort(function (a, b) {

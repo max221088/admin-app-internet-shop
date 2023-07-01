@@ -133,7 +133,6 @@ export default {
       ? this.searchProduct.filter(product => {
           return ((this.selectedCategory.length) 
         ? product.category.some(category =>{
-          console.log((category.indexOf(this.selectedCategory) != (-1)) || this.selectedCategory === 'All')
           return ((category.indexOf(this.selectedCategory) != (-1)) || this.selectedCategory === 'All')
           }) : true)
         &&  ((product.title) ? ~product.title.toLowerCase().indexOf(this.queryTitle.toLowerCase()) :true)
@@ -141,7 +140,6 @@ export default {
       })
       : this.searchProduct;
       this.$store.commit('ProductSearch', prod);
-      console.log(prod)
     },
       selelectedSort: function () {
         this.productsRender.sort(function (a, b) {
@@ -196,7 +194,6 @@ export default {
   },
   beforeUpdate () {
     this.searchProduct = this.$store.getters['getProductsForSearch'];
-    console.log(this.searchProduct)
   }
 
  }

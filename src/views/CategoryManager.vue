@@ -94,7 +94,6 @@ export default {
             title: data.toLowerCase()
         } 
         this.$store.dispatch('addCategoryToDB', newCat)    
-        console.log(newCat)
         } else {
             this.$refs.warning.show()
         }

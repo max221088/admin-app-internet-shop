@@ -76,7 +76,6 @@ export default {
                 chapter: this.id,
                 id: this.renderInfo[this.index].id
             }
-            console.log(EditArticle);
             this.$store.dispatch('deleteArticleToDB', EditArticle );
             this.$store.dispatch('fetchArticls', this.id);
         },
@@ -98,7 +97,6 @@ export default {
                 chapter: this.id,
                 Update: this.renderInfo[this.index]
             }
-            console.log(EditArticle)
             this.$store.dispatch('addArticleToDB', EditArticle );
             this.$store.dispatch('fetchArticls', this.id);
         }  

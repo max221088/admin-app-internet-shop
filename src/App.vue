@@ -47,8 +47,6 @@
                 class="nav-link" aria-current="page">Contact</router-link></li>
               <li><router-link to="/information/waranty/"
                 class="nav-link" aria-current="page">Waranty Info</router-link></li>
-                <li><router-link to="/information/social-link/"
-                class="nav-link" aria-current="page">Social-link</router-link></li>
             </ul>
           </li>
         </ul>

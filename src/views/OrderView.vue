@@ -140,7 +140,6 @@ export default {
     },
     methods: {
         saveOrder () {
-            console.log(this.order)
             this.$store.dispatch('addOrderToDB', this.order);
         },
         getDate (id) {
@@ -161,21 +160,10 @@ export default {
             if (!this.editProduct.id){
                 this.editProduct.id = Date.now().toString();
             }
-            console.log(this.editProduct);
             this.$store.dispatch('addProductToDB', this.editProduct)
             this.$store.commit('UrlUpdate');
             
         },
-        changeCategory (data) {
-            this.cat = data;
-            if ((this.editProduct.category.indexOf(this.cat)) != -1) {
-                console.log('Category Error')
-            } else {
-                this.editProduct.category.push(this.cat);
-            }
-        },
-        
-        
     },
     computed: {
         sumOrder () {
