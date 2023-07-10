@@ -42,11 +42,11 @@
         </div>
     </div>
     <ModalConfirm id="exampleModalConfirmAdd" :msg="'Add new Article ?' " 
-        :btnText="'Add'" @DelProduct="addArticle"></ModalConfirm>
+        :btnText="'Add'" @confirm="addArticle"></ModalConfirm>
     <ModalConfirm id="exampleModalConfirmDel" :msg="'Delete this Article ?'" 
-        :btnText="'Delete'" @DelProduct="delArticle"></ModalConfirm>
+        :btnText="'Delete'" @confirm="delArticle"></ModalConfirm>
     <ModalConfirm id="exampleModalConfirmSave" :msg="'Save this Article ?'" 
-        :btnText="'Save'" @DelProduct="saveArticle"></ModalConfirm>
+        :btnText="'Save'" @confirm="saveArticle"></ModalConfirm>
   </div>
 </template>
 

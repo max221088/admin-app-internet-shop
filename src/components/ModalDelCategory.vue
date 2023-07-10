@@ -25,7 +25,7 @@
  
  <script>
  export default {
-   name: 'ModalAddCategory',
+   name: 'ModalDelCategory',
    props: ['categories'],
    data: function () {
      return {
@@ -34,7 +34,7 @@
    },
    methods: {
      delCategory () {
-       this.$emit('DelCat', this.cat)
+       this.$emit('delCat', this.cat)
      }
    }
  }

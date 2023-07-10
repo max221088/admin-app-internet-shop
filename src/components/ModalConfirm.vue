@@ -12,7 +12,7 @@
              <div class="modal-footer">
                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                <button type="button" class="btn btn-primary" 
-                 @click="delPrice()" data-bs-dismiss="modal">{{btnText}}</button>
+                 @click="onComfirm()" data-bs-dismiss="modal">{{btnText}}</button>
              </div>
            </div>
        </div>
@@ -31,10 +31,9 @@
      }
    },
    methods: {
-     delPrice () {
-            this.$emit('DelProduct')
-     
-     }
+      onConfirm () {
+        this.$emit('confirm')
+      }
    }
  }
  </script>

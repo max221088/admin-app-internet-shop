@@ -113,7 +113,7 @@
             data-bs-toggle="modal" data-bs-target="#exampleModalSaveOrder"
             class="btn btn-primary btn-lg save">Save</button>
         <ModalConfirm id="exampleModalSaveOrder" :msg="'Save Change in ' +order.id+' ?' " 
-            :btnText="'Save'" @DelProduct="saveOrder"></ModalConfirm>
+            :btnText="'Save'" @confirm="saveOrder"></ModalConfirm>
     </div>
 
 </template>
@@ -148,7 +148,7 @@ export default {
             return date
         },
         onCancel () {
-            this.$store.commit('UrlUpdate');
+            this.$store.commit('urlUpdate');
         },
         saveProduct () {
             this.dawnloadURL.forEach((el) => {
@@ -161,7 +161,7 @@ export default {
                 this.editProduct.id = Date.now().toString();
             }
             this.$store.dispatch('addProductToDB', this.editProduct)
-            this.$store.commit('UrlUpdate');
+            this.$store.commit('urlUpdate');
             
         },
     },

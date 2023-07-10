@@ -36,7 +36,7 @@
         this.title = '';
     },
      delPrice () {
-            this.$emit('DelProduct', this.title)
+            this.$emit('addNewCat', this.title)
      
      }
    }

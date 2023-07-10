@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     addCategory () {
-      this.$emit('AddCat', this.cat)
+      this.$emit('addCat', this.cat)
     }
   }
 }

@@ -18,12 +18,6 @@
                     </label>
                   </li>
                 </ul>
-                <!-- <div class="form-check" v-for="prod, index in products" :key="index">
-                <input class="form-check-input" type="checkbox" :value="prod.id" id="defaultCheck1">
-                <label class="form-check-label" for="defaultCheck1">
-                  {{ prod.title }}
-                </label> 
-              </div>-->
               </div>
              </div>
              <div class="modal-footer">

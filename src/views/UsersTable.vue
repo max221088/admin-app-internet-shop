@@ -45,13 +45,12 @@ export default {
   },
   methods: {
     searchUser () {
-        //let result = [];
         let filtered = this.usersForSearch.filter((el) => {
             return (el.name.toLowerCase().indexOf(this.query.toLowerCase()) != -1 
             || el.tel.toLowerCase().indexOf(this.query.toLowerCase()) != -1
             || el.email.toLowerCase().indexOf(this.query.toLowerCase()) != -1)
         })
-        this.$store.commit('UsersSearch', filtered)
+        this.$store.commit('usersSearch', filtered)
     }
         
   },

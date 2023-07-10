@@ -58,7 +58,6 @@
       <th scope="row">{{ item.order }}</th>
       <td><img class="avatar" :src="item.avatar" ></td>
       <td>{{ item.title }}</td>
-      <!-- <td>{{ getCatName(item.category) }}</td> -->
       <td><span v-for="id, index in item.category" :key="index" class="up-cap">{{ catName(id) + ' ' }}</span></td>
       <td>{{ item.short }}</td>
       <td>{{ item.price.value }}</td>
@@ -72,7 +71,7 @@
   </tbody>
 </table>
 <ModalConfirm id="exampleModalConfirm" :msg="'Delete product '+delProd+' ?' " 
-:btnText="'Delete'" @DelProduct="delProduct"></ModalConfirm>
+:btnText="'Delete'" @confirm="delProduct"></ModalConfirm>
   </div>
 </template>
 
@@ -82,7 +81,7 @@ import ModalConfirm from './ModalConfirm.vue'
 export default {
   name: 'HelloWorld',
   components: {
-        ModalConfirm
+      ModalConfirm
     },
   props: [],
   data: () => {
@@ -139,7 +138,7 @@ export default {
         &&  ((product.description) ? ~product.description.toLowerCase().indexOf(this.queryDescr.toLowerCase()) :true)
       })
       : this.searchProduct;
-      this.$store.commit('ProductSearch', prod);
+      this.$store.commit('productSearch', prod);
     },
       selelectedSort: function () {
         this.productsRender.sort(function (a, b) {

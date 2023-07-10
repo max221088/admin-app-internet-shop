@@ -22,20 +22,20 @@
 </template>
 
 <script>
- export default {
-   name: 'AlertWarning',
-   props: [],
-   data: function () {
+  export default {
+    name: 'AlertWarning',
+    props: [],
+    data: function () {
     return {
-            isShow: false,
-        }
-   },
-   methods: {
+        isShow: false,
+      }
+    },
+    methods: {
     show () {
-            this.isShow = true;
-            setTimeout (()=> {this.isShow = false}, 3000)
-        }
-     
-   }
- }
+        this.isShow = true;
+        setTimeout (()=> {this.isShow = false}, 3000)
+      }
+      
+    }
+  }
  </script>

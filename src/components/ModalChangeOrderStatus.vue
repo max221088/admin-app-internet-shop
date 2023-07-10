@@ -31,14 +31,14 @@
    props: [],
    data: function () {
      return {
-       status: ''
+        status: ''
      }
    },
    methods: {
      changeStatus () {
-       this.$emit('ChangeStat', this.status)
-       this.staus = ''
-     }
+        this.$emit('changeStat', this.status)
+        this.staus = ''
+      }
    }
  }
  </script>

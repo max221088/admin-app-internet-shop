@@ -68,7 +68,7 @@
       <td>
         <router-link :to="{name: 'orderView' , 
         params:{id:order.id}}" ><span class="btn btn-success">Show Details</span></router-link>
-        <ModalChangeOrderStatus @ChangeStat="addStatus"></ModalChangeOrderStatus>
+        <ModalChangeOrderStatus @changeStat="addStatus"></ModalChangeOrderStatus>
     </td>
     </tr>
   </tbody>

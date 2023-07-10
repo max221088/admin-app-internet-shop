@@ -37,8 +37,8 @@
     </div>
     <ModalAddProductToCategory id="exampleModaAddProd" :cat="catId" ></ModalAddProductToCategory>
     <ModalConfirm id="exampleModaDelCat" :msg="'You want to remove THIS category?' " 
-        :btnText="'Ok'" @DelProduct="delCategoryFromDB"></ModalConfirm>
-    <ModalAddNewCategory id="exampleModaAddNewCat" @DelProduct="addCategory"></ModalAddNewCategory>
+        :btnText="'Ok'" @confirm="delCategoryFromDB"></ModalConfirm>
+    <ModalAddNewCategory id="exampleModaAddNewCat" @addNewCat="addCategory"></ModalAddNewCategory>
     <AlertWarning ref="warning"></AlertWarning>
 </div>
 </template>
@@ -102,8 +102,8 @@ export default {
   },
   computed: {
     products () {
-         return this.$store.getters['getProductsFromDB'];
-     },
+        return this.$store.getters['getProductsFromDB'];
+    },
     categories () {
         return this.$store.getters['getCategoriesFromDB'];
     }

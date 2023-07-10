@@ -1,13 +1,17 @@
 // Modules
 @import '../../../node_modules/bootstrap/dist/css/bootstrap.css';
-@import '../../../node_modules/jodit/es2021/jodit.min.css';
+@import '../../../node_modules/jodit/es2021/jodit.css';
+
+// General
+@import './general.less';
+
+// Views
+@import './views/editProduct.less';
+@import './views/infirmationView.less';
+@import './views/categoriesManager.less';
+@import './views/orderView.less';
 
 // Components
-@import './general.less';
-@import './editProduct.less';
-@import './productTable.less';
-@import './infirmationView.less';
-@import './showOrder.less';
-@import './categoriesManager.less';
-@import './modalAddProdToCat.less';
-@import './alerts.less';
+@import './components/productTable.less';
+@import './components/modalAddProdToCat.less';
+@import './components/alerts.less';

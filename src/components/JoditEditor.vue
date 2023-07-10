@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import '../../node_modules/jodit/es2021/jodit.css';
 	const Jodit = require('jodit');
 
 	export default {
@@ -29,3 +30,6 @@
 		}
 	}
 </script>
+<style>
+@import '../../node_modules/jodit/es2021/jodit.css';
+</style>

@@ -62,9 +62,9 @@
                                 <button  class="btn btn-primary mr-md-2 btn-danger" type="button" 
                                 data-bs-toggle="modal" data-bs-target="#exampleModalDel">X</button>
                             </div>
-                            <ModalAddCategory :categories="getCategories" @AddCat="changeCategory"></ModalAddCategory>
+                            <ModalAddCategory :categories="getCategories" @addCat="changeCategory"></ModalAddCategory>
                             <ModalDelCategory v-if="editProduct.title" 
-                            :categories="catProduct" @DelCat="delCategory"></ModalDelCategory>
+                            :categories="catProduct" @delCat="delCategory"></ModalDelCategory>
                         </div>
                     </div>
                     
@@ -134,6 +134,9 @@
                 <div class="col-10">
                     <textarea  name="editor" class="form-control" id="exampleFormControlTextarea1 editor" 
                     rows="8" v-model="editProduct.description"></textarea>
+                    <!-- <Editor :ref="editProduct.description" selector="productInfoEditorEN" buttons="bold, italic, underline, ul, ol, link, undo, redo"/> -->
+                    <!-- <JoditVue :id="id" ></JoditVue> -->
+                    <!-- <jodit-editor v-model="content" :buttons="buttons"/> -->
                 </div>
             </div>
             <div class="row">
@@ -142,7 +145,7 @@
                      data-bs-toggle="modal" data-bs-target="#exampleModalSave"
                     class="btn btn-primary btn-lg save">Save</button>
                     <ModalConfirm id="exampleModalSave" :msg="'Save product '+editProduct.title+' ?' " 
-                        :btnText="'Save'" @DelProduct="saveProduct"></ModalConfirm>
+                        :btnText="'Save'" @confirm="saveProduct"></ModalConfirm>
                     <button  type="button" 
                     class="btn btn-secondary btn-lg" @click="onCancel">Cancel</button>
                 </div>
@@ -153,25 +156,30 @@
 
 <script>
 
-//import TextEditor from './EditProduct.vue'
-//import Editor from '../components/JoditEditor.vue'
 import ModalAddCategory from '../components/ModalAddCategory.vue'
 import ModalDelCategory from '../components/ModalDelCategory.vue'
 import ModalConfirm from '../components/ModalConfirm.vue'
-
+// import Editor from '../components/JoditEditor.vue'
+//import JoditVue from '../components/JoditVue.vue'
+// import '../../node_modules/jodit-vue/node_modules/jodit/build/jodit.min.css'
+//  import { JoditEditor } from 'jodit-vue'
 
 
 export default {
     name: 'EditProduct',
     components: {
-        //Editor
         ModalAddCategory,
         ModalDelCategory,
-        ModalConfirm
+        ModalConfirm,
+        //Editor,
+        //JoditVue,
+        //  JoditEditor
     },
     data: function() {
         return {
         id: this.$route.params.id,
+        //  content: '',
+        //  buttons: [ 'bold', 'underline', 'italic', 'ul', 'ol', 'link', 'undo', 'redo'],
         new: {
             order: '',
             avatar: '',
@@ -197,7 +205,7 @@ export default {
             let img = [];
             img.push(this.dawnloadURL[index]);
             this.$store.dispatch('delImg', img);
-            this.$store.commit('UrlDel', index);
+            this.$store.commit('urlDel', index);
         },
         delImgEdit(index){
             let img = [];
@@ -227,7 +235,7 @@ export default {
                 this.$store.dispatch('delImg', img)
                 }
             }
-            this.$store.commit('UrlUpdate');
+            this.$store.commit('urlUpdate');
             this.$router.push({ path: '/' })
         },
         saveProduct () {
@@ -241,7 +249,7 @@ export default {
                 this.editProduct.id = Date.now().toString();
             }
             this.$store.dispatch('addProductToDB', this.editProduct)
-            this.$store.commit('UrlUpdate');
+            this.$store.commit('urlUpdate');
             this.$router.push({ name: 'home' })
         },
         changeCategory (data) {

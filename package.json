@@ -8,10 +8,11 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "jodit": "*",
     "bootstrap": "^5.2.3",
-    "firebase": "^9.21.0",
     "core-js": "^3.8.3",
+    "firebase": "^9.21.0",
+    "jodit": "^4.0.0-beta.61",
+    "jodit-vue": "3.*",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"

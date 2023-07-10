@@ -129,6 +129,9 @@ export default createStore({
     getProductsFromDB (state) {
       return state.productsDB;
     },
+    getProductDescription (state) {
+      return state.product.description;
+    },
     getProduct (state) {
       return state.product;
     },
@@ -149,20 +152,20 @@ export default createStore({
     userOrdersFilter (state, filteredOrders) {
       state.userOrders = filteredOrders;
     },
-    UrlDel (state, index) {
+    urlDel (state, index) {
       state.url.splice(index, 1)
     },
-    UrlUpdate (state) {
+    urlUpdate (state) {
       state.url = []
       state.avatarUrl = []
     },
     ordersSearch (state, filteredOrders) {
       state.ordersDB = filteredOrders;
     },
-    ProductSearch (state, filteredProduct) {
+    productSearch (state, filteredProduct) {
       state.productsDB = filteredProduct;
     },
-    UsersSearch (state, filteredUser) {
+    usersSearch (state, filteredUser) {
       state.usersDB = filteredUser;
     },
   },
