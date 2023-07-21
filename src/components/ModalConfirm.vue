@@ -12,7 +12,7 @@
              <div class="modal-footer">
                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                <button type="button" class="btn btn-primary" 
-                 @click="onComfirm()" data-bs-dismiss="modal">{{btnText}}</button>
+                 @click="onConfirm()" data-bs-dismiss="modal">{{btnText}}</button>
              </div>
            </div>
        </div>

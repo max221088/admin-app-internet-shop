@@ -4,6 +4,7 @@
   <thead>
     <tr>
       <th scope="col">Order</th>
+      <th scope="col">Status</th>
       <th scope="col">Avatar</th>
       <th scope="col">Title</th>
       <th scope="col">Category</th>
@@ -20,6 +21,13 @@
           <option value="2">max to min</option>
         </select>
       </th>
+      <th scope="col">
+        <select v-model="status" @change="filteredProducts" class="form-select form-select-sm">
+          <option selected value="All">All</option>
+          <option value="active">Active</option>
+          <option value="deleted">Deleted</option>
+        </select>
+      </th>
       <th scope="col"></th>
       <th scope="col">
         <input v-model="queryTitle" @input="filteredProducts"
@@ -29,7 +37,7 @@
       <th scope="col">
         <select class="form-select form-select-sm" 
         @change="filteredProducts" v-model="selectedCategory" >
-        <option value="All" selected>All</option>
+          <option value="All" selected>All</option>
           <option v-for="(item, index) in getCategories" 
           :key="index" :value="item.id" >{{ item.title }}</option>  
         </select>
@@ -56,6 +64,7 @@
   <tbody>
     <tr v-for="item, index in productsRender" :key="index">
       <th scope="row">{{ item.order }}</th>
+      <td scope="row">{{ item.status }}</td>
       <td><img class="avatar" :src="item.avatar" ></td>
       <td>{{ item.title }}</td>
       <td><span v-for="id, index in item.category" :key="index" class="up-cap">{{ catName(id) + ' ' }}</span></td>
@@ -64,14 +73,21 @@
       <td class="up-case">{{ item.price.unit }}</td>
       <td><router-link :to="{name: 'EditProduct' , 
         params:{id:item.id}}" ><span class="btn btn-success">Edit</span></router-link></td>
-      <td data-bs-toggle="modal" data-bs-target="#exampleModalConfirm"><span 
-        :data-id="item.id" :data-name="item.title"  @click="getDataForDel($event, index)" 
-        class="btn btn-danger" >Delete</span></td>
+      <td v-if="item.status=='active'" data-bs-toggle="modal" data-bs-target="#modalConfirmDelete"><span 
+        @click="getDataForChangeStatus(item)" 
+        class="btn btn-danger" >Delete</span>
+      </td>
+      <td v-if="item.status=='deleted'" data-bs-toggle="modal" data-bs-target="#modalConfirmActive"><span 
+        @click="getDataForChangeStatus(item)" 
+        class="btn btn-info" >Activate</span>
+      </td>
     </tr>
   </tbody>
 </table>
-<ModalConfirm id="exampleModalConfirm" :msg="'Delete product '+delProd+' ?' " 
+<ModalConfirm id="modalConfirmDelete" :msg="'Delete product '+changeProd.title+' ?' " 
 :btnText="'Delete'" @confirm="delProduct"></ModalConfirm>
+<ModalConfirm id="modalConfirmActive" :msg="'Activate product '+changeProd.title+' ?' " 
+:btnText="'Confirm'" @confirm="activeProduct"></ModalConfirm>
   </div>
 </template>
 
@@ -86,9 +102,8 @@ export default {
   props: [],
   data: () => {
     return {
-      delProd: '',
-      delId: '',
-      index: '',
+      changeProd: [],
+      status: 'All',
       selectedCategory: 'All',
       sortParam: '1',
       searchProduct: [],
@@ -104,27 +119,16 @@ export default {
         }
       }
     },
-    getDataForDel (event, index) {
-      this.delProd = event.target.getAttribute('data-name');
-      this.delId = event.target.getAttribute('data-id');
-      this.index = index
+    getDataForChangeStatus (product) {
+      this.changeProd = product;
     },
     delProduct () {
-      let img = [];
-      if (this.productsRender[this.index].avatar) {
-        img.push(this.productsRender[this.index].avatar);
-      }
-      for (let i = 0; i < this.productsRender[this.index].gallery.length; i++) {
-        img.push(this.productsRender[this.index].gallery[i])
-      }
-      if (img.length) {
-        this.$store.dispatch('delImg', img);
-      }
-      this.$store.dispatch('deleteProductInDB', this.delId);
-      this.delProd = '';
-      this.delId = '';
-      this.index = '';
-      this.$store.dispatch('fetchProducts')
+      this.changeProd.status = 'deleted';
+      this.$store.dispatch('addProductToDB', this.changeProd);
+    },
+    activeProduct () {
+      this.changeProd.status = 'active';
+      this.$store.dispatch('addProductToDB', this.changeProd);
     },
     filteredProducts( ) {
       let prod = [];
@@ -136,46 +140,47 @@ export default {
           }) : true)
         &&  ((product.title) ? ~product.title.toLowerCase().indexOf(this.queryTitle.toLowerCase()) :true)
         &&  ((product.description) ? ~product.description.toLowerCase().indexOf(this.queryDescr.toLowerCase()) :true)
+        &&  ((this.status != 'All') ? product.status == this.status :true)
       })
       : this.searchProduct;
       this.$store.commit('productSearch', prod);
     },
-      selelectedSort: function () {
-        this.productsRender.sort(function (a, b) {
-            if (this.sortParam == 1) {
-                if (Number(a.order) > Number(b.order)) {
-                    return 1;
-                }
-                if (Number(a.order) < Number(b.order)) {
-                    return -1;
-                }
-            }
-            if (this.sortParam == 2) {
-                if (Number(a.order) < Number(b.order)) {
-                    return 1;
-                    }
-                if (Number(a.order) > Number(b.order)) {
-                    return -1;
-                }
-            }
-            if (this.sortParam == 3) {
-                if (Number(a.price.value) > Number(b.price.value)) {
-                    return 1;
-                }
-                if (Number(a.price.value) < Number(b.price.value)) {
-                    return -1;
-                }
-            }
-            if (this.sortParam == 4) {
-                if (Number(a.price.value) < Number(b.price.value)) {
-                    return 1;
-                }
-                if (Number(a.price.value) > Number(b.price.value)) {
-                    return -1;
-                }
-            }
-            return 0;
-        }.bind(this));
+    selelectedSort: function () {
+      this.productsRender.sort(function (a, b) {
+          if (this.sortParam == 1) {
+              if (Number(a.order) > Number(b.order)) {
+                  return 1;
+              }
+              if (Number(a.order) < Number(b.order)) {
+                  return -1;
+              }
+          }
+          if (this.sortParam == 2) {
+              if (Number(a.order) < Number(b.order)) {
+                  return 1;
+                  }
+              if (Number(a.order) > Number(b.order)) {
+                  return -1;
+              }
+          }
+          if (this.sortParam == 3) {
+              if (Number(a.price.value) > Number(b.price.value)) {
+                  return 1;
+              }
+              if (Number(a.price.value) < Number(b.price.value)) {
+                  return -1;
+              }
+          }
+          if (this.sortParam == 4) {
+              if (Number(a.price.value) < Number(b.price.value)) {
+                  return 1;
+              }
+              if (Number(a.price.value) > Number(b.price.value)) {
+                  return -1;
+              }
+          }
+          return 0;
+      }.bind(this));
     },
   },
   computed: {

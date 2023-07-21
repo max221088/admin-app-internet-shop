@@ -256,9 +256,6 @@ export default createStore({
     deleteArticleToDB (context, EditArticle) {
       return deleteDoc(doc(DB, EditArticle.chapter, EditArticle.id));
     },
-    deleteProductInDB (context, ID) {  
-      return deleteDoc(doc(DB, 'Products', ID))
-    },
     delImg(context, img) {
       for (let i = 0; i < img.length; i++) {
       let storageRef = ref(Storage, img[i]);

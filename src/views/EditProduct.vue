@@ -15,6 +15,17 @@
                     </div>
                     <div class="row">
                         <div class="col-3">
+                            <p>Product Status</p>
+                        </div>
+                        <div class="col-9">
+                            <select v-model="editProduct.status" class="form-select form-select-sm">
+                                <option value="active">Active</option>
+                                <option value="deleted">Deleted</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
                             <p>Product Orders</p>
                         </div>
                         <div class="col-9">
@@ -162,7 +173,7 @@ import ModalConfirm from '../components/ModalConfirm.vue'
 // import Editor from '../components/JoditEditor.vue'
 //import JoditVue from '../components/JoditVue.vue'
 // import '../../node_modules/jodit-vue/node_modules/jodit/build/jodit.min.css'
-//  import { JoditEditor } from 'jodit-vue'
+//   import { JoditEditor } from 'jodit-vue'
 
 
 export default {
@@ -171,9 +182,9 @@ export default {
         ModalAddCategory,
         ModalDelCategory,
         ModalConfirm,
-        //Editor,
+        // Editor,
         //JoditVue,
-        //  JoditEditor
+        //   JoditEditor
     },
     data: function() {
         return {
