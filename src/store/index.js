@@ -53,7 +53,7 @@ export default createStore({
   state: {
     isLogin: false,
     productsDB: [],
-    product: [],
+    product: {},
     productsForSearch: [],
     categoriesDB: [],
     url: [],
@@ -129,9 +129,6 @@ export default createStore({
     getProductsFromDB (state) {
       return state.productsDB;
     },
-    getProductDescription (state) {
-      return state.product.description;
-    },
     getProduct (state) {
       return state.product;
     },
@@ -195,7 +192,7 @@ export default createStore({
     },
     logout () {
       signOut(AUTH)
-        .then()
+      .then()
     },
     login (context, userCred) {
       signInWithEmailAndPassword(AUTH, userCred.email, userCred.pass) 
@@ -241,7 +238,7 @@ export default createStore({
     },
     updateCategoryInProducts (context, products) {
       for (let i = 0; i < products.length; i++) {
-         setDoc(doc(DB, 'Products', products[i].id), products[i]);
+        setDoc(doc(DB, 'Products', products[i].id), products[i]);
       }
     },
     addCategoryToDB (context, category) {
@@ -258,28 +255,27 @@ export default createStore({
     },
     delImg(context, img) {
       for (let i = 0; i < img.length; i++) {
-      let storageRef = ref(Storage, img[i]);
-      deleteObject(storageRef)
-          .then();
-        }
+        let storageRef = ref(Storage, img[i]);
+        deleteObject(storageRef)
+        .then();
+      }
     },
     upload(context, post) {
       for (let i = 0; i < post.files.length; i++) {
-      let storageRef = ref(Storage, 'products-images/' + post.id + "/" + post.files[i].name);
-      uploadBytes(storageRef, post.files[i])
-          .then(() => {
-              getDownloadURL(ref(Storage, 'products-images/' + post.id + "/" + post.files[i].name))
-              .then((url) => {
-                if (post.trigger == 1) {
-                  context.state.avatarUrl = url;
-                }
-                if (post.trigger == 2) {
-                  context.state.url.push(url);
-                }
-              });
+        let storageRef = ref(Storage, 'products-images/' + post.id + "/" + post.files[i].name);
+        uploadBytes(storageRef, post.files[i])
+        .then(() => {
+          getDownloadURL(ref(Storage, 'products-images/' + post.id + "/" + post.files[i].name))
+          .then((url) => {
+            if (post.trigger == 1) {
+              context.state.avatarUrl = url;
+            }
+            if (post.trigger == 2) {
+              context.state.url.push(url);
+            }
           });
-        }
-      
+        });
+      }
     },
     fetchArticlesID (context, ID) {
       return getDocFromDB ('Info', ID)
@@ -296,14 +292,14 @@ export default createStore({
           }
         });
         context.state.articlsDB = articls;
-        })
-      },
+      })
+    },
     fetchArticls(context, info) {
       let articls = [];
       getDataFromDB(info)
-        .then(data => {
-          data.forEach(list => {
-            articls.push(list.data());
+      .then(data => {
+        data.forEach(list => {
+          articls.push(list.data());
         });
         articls.sort(function (a, b) {
           if (Number(a.order) > Number(b.order)) {
@@ -319,9 +315,9 @@ export default createStore({
     fetchProducts(context) {
       let products = [];
       getDataFromDB('Products')
-        .then(data => {
-          data.forEach(list => {
-            products.push(list.data());
+      .then(data => {
+        data.forEach(list => {
+          products.push(list.data());
         });
         products.sort(function (a, b) {
           if ((a.title) > (b.title)) {
@@ -338,9 +334,9 @@ export default createStore({
     fetchUsers(context) {
       let users = [];
       getDataFromDB('Users')
-        .then(data => {
-          data.forEach(list => {
-            users.push(list.data());
+      .then(data => {
+        data.forEach(list => {
+          users.push(list.data());
         });
         users.sort(function (a, b) {
           if ((a.name) > (b.name)) {
@@ -356,10 +352,10 @@ export default createStore({
     },
     fetchCategories(context) {
       getDataFromDB('Сategories')
-        .then(data => {
-          context.state.categoriesDB = [];
-          data.forEach(list => {
-            context.state.categoriesDB.push(list.data());
+      .then(data => {
+        context.state.categoriesDB = [];
+        data.forEach(list => {
+          context.state.categoriesDB.push(list.data());
         });
       })
     },
@@ -371,6 +367,4 @@ export default createStore({
         })
       },
   },
-  modules: {
-  }
 })

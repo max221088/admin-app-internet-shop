@@ -31,11 +31,10 @@
       }
     },
     methods: {
-    show () {
+      show () {
         this.isShow = true;
         setTimeout (()=> {this.isShow = false}, 3000)
       }
-      
     }
   }
- </script>
+</script>

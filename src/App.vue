@@ -63,45 +63,41 @@
 </template>
 
 <script>
-
-export default {
-  name: 'App',
-  components: {
-    
-  },
-  data: () => {
-    return {
+  export default {
+    name: 'App',
+    data: () => {
+      return {
         userCred: {
           email: '',
           pass: ''
         }
-    }
-  },
-  methods: {
-    logout() {
-      this.$store.dispatch('logout');
-      window.sessionStorage.clear()
+      }
     },
-    login () {
-      this.$store.dispatch('login', this.userCred);
-    }
-  },
-  computed: {
-    isLogin () {
-         return this.$store.getters['getIsLogin'];
-     },
-    
-  },
-  created: function () {
-    if (window.sessionStorage.length) {
-      this.userCred = JSON.parse(window.sessionStorage.login);
-      this.login()
+    methods: {
+      logout() {
+        this.$store.dispatch('logout');
+        window.sessionStorage.clear()
+      },
+      login () {
+        this.$store.dispatch('login', this.userCred);
+      }
+    },
+    computed: {
+      isLogin () {
+          return this.$store.getters['getIsLogin'];
+      },
+      
+    },
+    created: function () {
+      if (window.sessionStorage.length) {
+        this.userCred = JSON.parse(window.sessionStorage.login);
+        this.login()
+      }
     }
   }
-}
 </script>
 
 
 <style lang="less">
-@import './assets/style/style.less';
+  @import './assets/style/index.less';
 </style>
