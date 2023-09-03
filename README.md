@@ -1,5 +1,9 @@
 # admin-app-internet-shop
 
+Enter to App
+User Name : test@mail.com
+Password: 111111
+
 ## Project setup
 ```
 npm install
